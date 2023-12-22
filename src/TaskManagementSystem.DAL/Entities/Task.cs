@@ -1,10 +1,10 @@
-﻿using TaskManagementSystem.DAL.Enums;
+﻿using TaskManagementSystem.DAL.Abstractions;
+using TaskManagementSystem.DAL.Enums;
 
 namespace TaskManagementSystem.DAL.Entities;
 
-public class Task
+public class Task : Entity
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public TaskState State { get; set; } = TaskState.Pending;
     public DateTime? DeadLine { get; set; }
