@@ -7,6 +7,7 @@ public class Task
     public int Id { get; set; }
     public string Name { get; set; }
     public TaskState State { get; set; } = TaskState.Pending;
+    public DateTime? DeadLine { get; set; }
     public ICollection<Task> Subtasks { get; set; } = new List<Task>();
     public ICollection<string> Categories { get; set; } = new List<string>();
 }
