@@ -2,7 +2,7 @@
 
 namespace TaskManagementSystem.Api.Identity;
 
-public class ApplicationUser : IdentityUser<int>
+public class Account : IdentityUser
 {
     public int UserId { get; set; }
 }

@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
     public static void AddBusinessLogic(this IServiceCollection services)
     {
         services.AddScoped<ITaskService, TaskService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
     }
 }

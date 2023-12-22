@@ -1,6 +1,15 @@
-﻿namespace TaskManagementSystem.Api.Identity;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
-public class IdentityContext
+namespace TaskManagementSystem.Api.Identity;
+
+public class IdentityContext : IdentityDbContext<Account>
 {
+    public IdentityContext()
+    {
+    }
     
+    public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
+    {
+    }
 }
