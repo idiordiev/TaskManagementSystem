@@ -8,6 +8,10 @@ public class Task
     public string Name { get; set; }
     public TaskState State { get; set; } = TaskState.Pending;
     public DateTime? DeadLine { get; set; }
-    public ICollection<Task> Subtasks { get; set; } = new List<Task>();
-    public ICollection<string> Categories { get; set; } = new List<string>();
+    public string Category { get; set; }
+    
+    public ICollection<Subtask> Subtasks { get; set; } = [];
+    
+    public int UserId { get; set; }
+    public User User { get; set; }
 }

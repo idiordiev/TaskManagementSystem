@@ -1,4 +1,8 @@
+using TaskManagementSystem.DAL.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDataLayer(builder.Configuration);
 
 builder.Services.AddControllers();
 

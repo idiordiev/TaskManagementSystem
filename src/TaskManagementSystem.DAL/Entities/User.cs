@@ -8,5 +8,5 @@ public class User
     public string Name { get; set; }
     public string Email { get; set; }
     public UserState State { get; set; } = UserState.Active;
-    public ICollection<Task> Tasks { get; set; } = new List<Task>();
+    public ICollection<Task> Tasks { get; set; } = [];
 }
