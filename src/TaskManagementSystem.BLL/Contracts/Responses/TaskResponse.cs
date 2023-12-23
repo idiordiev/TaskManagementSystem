@@ -6,6 +6,7 @@ public class TaskResponse
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public int UserId { get; set; }
     public TaskState State { get; set; }
     public DateTime? DeadLine { get; set; }
     public string Category { get; set; }

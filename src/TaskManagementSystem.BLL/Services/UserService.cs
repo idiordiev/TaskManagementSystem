@@ -28,7 +28,7 @@ public class UserService : IUserService
     
     public async Task<IEnumerable<UserResponse>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var users = await _unitOfWork.UserRepository.GetAsync(cancellationToken: cancellationToken);
+        var users = await _unitOfWork.UserRepository.GetAsync(x => x.State != UserState.Deleted, cancellationToken);
 
         return _mapper.Map<IEnumerable<UserResponse>>(users);
     }

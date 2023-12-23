@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TaskManagementSystem.BLL.Contracts;
 using TaskManagementSystem.BLL.Contracts.Responses;
 using TaskManagementSystem.DAL.Entities;
 
@@ -9,5 +10,6 @@ public class SubtaskProfile : Profile
     public SubtaskProfile()
     {
         CreateMap<SubtaskEntity, SubtaskResponse>();
+        CreateMap<UpdateSubtaskContract, SubtaskEntity>();
     }
 }
