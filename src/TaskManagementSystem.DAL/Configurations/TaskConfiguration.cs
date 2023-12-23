@@ -10,7 +10,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
     {
         builder.HasKey(x => x.Id);
         
-        builder.HasOne(x => x.UserEntity)
+        builder.HasOne(x => x.User)
             .WithMany(x => x.Tasks)
             .HasForeignKey(x => x.UserId);
     }

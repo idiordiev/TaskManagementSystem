@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.BLL.Contracts;
+using TaskManagementSystem.BLL.Contracts.Responses;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.BLL.Models;
 
@@ -19,16 +20,16 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Task>>> GetAll(int userId, [FromQuery] TaskFiltersModel filters,
+    public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAll(int userId, [FromQuery] TaskFiltersModel filters,
         CancellationToken cancellationToken)
     {
-        var tasks = await _taskService.GetTasksForUserAsync(userId, filters, cancellationToken);
+        var tasks = await _taskService.GetTasksByUserIdAsync(userId, filters, cancellationToken);
 
         return Ok(tasks);
     }
     
     [HttpGet("{taskId:int}")]
-    public async Task<ActionResult<IEnumerable<Task>>> GetById(int taskId, CancellationToken cancellationToken)
+    public async Task<ActionResult<TaskResponse>> GetById(int taskId, CancellationToken cancellationToken)
     {
         var task = await _taskService.GetByIdAsync(taskId, cancellationToken);
 
@@ -36,7 +37,7 @@ public class TaskController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<Task>> Create(int userId, [FromBody] CreateTaskContract createTaskContract,
+    public async Task<ActionResult<TaskResponse>> Create(int userId, [FromBody] CreateTaskContract createTaskContract,
         CancellationToken cancellationToken)
     {
         var task = await _taskService.AddAsync(userId, createTaskContract, cancellationToken);
@@ -45,7 +46,7 @@ public class TaskController : ControllerBase
     }
     
     [HttpPut("{taskId:int}")]
-    public async Task<ActionResult<IEnumerable<Task>>> Update(int taskId, [FromBody] UpdateTaskContract updateTaskContract,
+    public async Task<ActionResult<TaskResponse>> Update(int taskId, [FromBody] UpdateTaskContract updateTaskContract,
         CancellationToken cancellationToken)
     {
         var task = await _taskService.UpdateAsync(taskId, updateTaskContract, cancellationToken);
@@ -54,7 +55,7 @@ public class TaskController : ControllerBase
     }
     
     [HttpDelete("{taskId:int}")]
-    public async Task<ActionResult<IEnumerable<Task>>> Delete(int taskId, CancellationToken cancellationToken)
+    public async Task<ActionResult> Delete(int taskId, CancellationToken cancellationToken)
     {
         await _taskService.DeleteByIdAsync(taskId, cancellationToken);
 

@@ -28,7 +28,7 @@ public class TaskService : ITaskService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<TaskResponse>> GetTasksForUserAsync(int userId, TaskFiltersModel filters, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TaskResponse>> GetTasksByUserIdAsync(int userId, TaskFiltersModel filters, CancellationToken cancellationToken = default)
     {
         var specs = new List<ISpecification<TaskEntity>>();
         
@@ -95,7 +95,7 @@ public class TaskService : ITaskService
             Name = newTask.Name,
             State = TaskState.Pending,
             DeadLine = newTask.DeadLine?.ToUniversalTime(),
-            UserEntity = user,
+            User = user,
             Subtasks = newTask.Subtasks.Select(x => new SubtaskEntity
             {
                 Name = x.Name,

@@ -9,5 +9,5 @@ public class SubtaskEntity : Entity
     public TaskState State { get; set; } = TaskState.Pending;
     
     public int TaskId { get; set; }
-    public TaskEntity TaskEntity { get; set; }
+    public TaskEntity Task { get; set; }
 }

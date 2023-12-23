@@ -13,5 +13,5 @@ public class TaskEntity : Entity
     public ICollection<SubtaskEntity> Subtasks { get; set; } = [];
     
     public int UserId { get; set; }
-    public UserEntity UserEntity { get; set; }
+    public UserEntity User { get; set; }
 }
