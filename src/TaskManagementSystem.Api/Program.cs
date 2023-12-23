@@ -29,24 +29,25 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddOptions<JwtSettings>().BindConfiguration(JwtSettings.SectionName);
 builder.Services.AddAuthentication(x =>
-{
-    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
-{
-    x.TokenValidationParameters = new TokenValidationParameters()
     {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!)),
-        ValidIssuer = configuration["JwtSettings:ValidIssuer"],
-        ValidAudience = configuration["JwtSettings:ValidAudience"],
+        x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(x =>
+    {
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!)),
+            ValidIssuer = configuration["JwtSettings:ValidIssuer"],
+            ValidAudience = configuration["JwtSettings:ValidAudience"],
 
-        ValidateAudience = true,
-        ValidateIssuer = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true
-    };
-});
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true
+        };
+    });
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
