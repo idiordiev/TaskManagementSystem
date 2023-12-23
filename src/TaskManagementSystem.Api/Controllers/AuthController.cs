@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<UserResponse>> Register([FromBody] CreateUserContract createUserContract, CancellationToken cancellationToken)
     {
-        var user = await _userService.CreateUserAsync(createUserContract, cancellationToken);
+        var user = await _userService.CreateAsync(createUserContract, cancellationToken);
         
         return Ok(user);
     }

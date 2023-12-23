@@ -38,7 +38,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserEntity>> Create([FromBody] CreateUserContract createUserContract, CancellationToken cancellationToken)
     {
-        var user = await _userService.CreateUserAsync(createUserContract, cancellationToken);
+        var user = await _userService.CreateAsync(createUserContract, cancellationToken);
 
         return Created(nameof(GetById), user);
     }
@@ -46,7 +46,7 @@ public class UserController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult<UserEntity>> Update(int id, [FromBody] UpdateUserContract updateUserContract, CancellationToken cancellationToken)
     {
-        var user = await _userService.UpdateUserAsync(id, updateUserContract, cancellationToken);
+        var user = await _userService.UpdateAsync(id, updateUserContract, cancellationToken);
 
         return Ok(user);
     }
@@ -54,7 +54,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        await _userService.DeactivateUserAsync(id, cancellationToken);
+        await _userService.DeactivateAsync(id, cancellationToken);
 
         return Ok();
     }

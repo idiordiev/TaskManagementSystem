@@ -47,7 +47,7 @@ public class UserService : IUserService
         return _mapper.Map<UserResponse>(user);
     }
 
-    public async Task<UserResponse> CreateUserAsync(CreateUserContract createUserContract, CancellationToken cancellationToken = default)
+    public async Task<UserResponse> CreateAsync(CreateUserContract createUserContract, CancellationToken cancellationToken = default)
     {
         if (await _unitOfWork.UserRepository.CheckIfActiveUserWithSameEmailExistsAsync(createUserContract.Email,
                 cancellationToken))
@@ -79,7 +79,7 @@ public class UserService : IUserService
         return _mapper.Map<UserResponse>(user);
     }
 
-    public async Task<UserResponse> UpdateUserAsync(int id, UpdateUserContract updateUserContract, CancellationToken cancellationToken = default)
+    public async Task<UserResponse> UpdateAsync(int id, UpdateUserContract updateUserContract, CancellationToken cancellationToken = default)
     {
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id, cancellationToken);
         if (user is null)
@@ -93,7 +93,7 @@ public class UserService : IUserService
         return _mapper.Map<UserResponse>(user);
     }
 
-    public async Task DeactivateUserAsync(int userId, CancellationToken cancellationToken = default)
+    public async Task DeactivateAsync(int userId, CancellationToken cancellationToken = default)
     {
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId, cancellationToken);
 

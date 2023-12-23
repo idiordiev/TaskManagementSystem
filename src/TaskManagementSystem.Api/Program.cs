@@ -90,7 +90,7 @@ async Task EnsureIdentityCreated(IServiceProvider serviceProvider)
 
     if (user is null)
     {
-        user = await userService.CreateUserAsync(new CreateUserContract
+        user = await userService.CreateAsync(new CreateUserContract
         {
             Name = "Admin",
             Email = adminEmail,
