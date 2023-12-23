@@ -31,6 +31,11 @@ public class SubtaskController : ControllerBase
     {
         var subtask = await _subtaskService.GetByIdAsync(subtaskId, cancellationToken);
 
+        if (subtask is null)
+        {
+            return NotFound();
+        }
+        
         return Ok(subtask);
     }
     

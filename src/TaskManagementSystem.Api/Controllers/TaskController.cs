@@ -33,6 +33,11 @@ public class TaskController : ControllerBase
     {
         var task = await _taskService.GetByIdAsync(taskId, cancellationToken);
 
+        if (task is null)
+        {
+            return NotFound();
+        }
+        
         return Ok(task);
     }
     

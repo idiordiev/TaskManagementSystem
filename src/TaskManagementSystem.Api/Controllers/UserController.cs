@@ -31,6 +31,11 @@ public class UserController : ControllerBase
     public async Task<ActionResult<UserEntity>> GetById(int id, CancellationToken cancellationToken)
     {
         var user = await _userService.GetByIdAsync(id, cancellationToken);
+        
+        if (user is null)
+        {
+            return NotFound();
+        }
 
         return Ok(user);
     }
