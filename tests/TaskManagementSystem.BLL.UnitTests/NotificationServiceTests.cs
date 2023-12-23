@@ -1,11 +1,9 @@
 ﻿using System.Linq.Expressions;
-using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using TaskManagementSystem.BLL.Exceptions;
 using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.BLL.Mapping;
 using TaskManagementSystem.BLL.Services;
 using TaskManagementSystem.DAL.Entities;
 using TaskManagementSystem.DAL.Interfaces;
@@ -98,6 +96,7 @@ public class NotificationServiceTests
 
         mockTimeProvider.Setup(x => x.GetUtcNow()).Returns(new DateTimeOffset(2023, 12, 24, 21, 39, 38, TimeSpan.Zero));
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()));
+        mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
         var service = new NotificationService(mockUnitOfWork.Object, mockCurrentUserService.Object,
