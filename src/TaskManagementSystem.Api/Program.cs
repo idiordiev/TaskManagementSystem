@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using TaskManagementSystem.Api.Extensions;
 using TaskManagementSystem.Api.Identity;
+using TaskManagementSystem.Api.Middlewares;
 using TaskManagementSystem.Api.Services;
 using TaskManagementSystem.BLL.Contracts;
 using TaskManagementSystem.BLL.Extensions;
@@ -59,6 +60,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

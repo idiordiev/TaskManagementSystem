@@ -118,6 +118,11 @@ public class TaskService : ITaskService
         {
             throw new NotFoundException("Task", id);
         }
+        
+        if (!_currentUserService.IsAdmin && task.UserId != _currentUserService.UserId)
+        {
+            throw new ForbiddenException();
+        }
 
         _mapper.Map(taskToUpdate, task);
 
@@ -135,7 +140,12 @@ public class TaskService : ITaskService
         {
             throw new NotFoundException("Task", id);
         }
-        
+
+        if (!_currentUserService.IsAdmin && task.UserId != _currentUserService.UserId)
+        {
+            throw new ForbiddenException();
+        }
+
         _unitOfWork.TaskRepository.Delete(task);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
