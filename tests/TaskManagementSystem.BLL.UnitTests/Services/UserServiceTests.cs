@@ -12,7 +12,7 @@ using TaskManagementSystem.DAL.Entities;
 using TaskManagementSystem.DAL.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
-namespace TaskManagementSystem.BLL.UnitTests;
+namespace TaskManagementSystem.BLL.UnitTests.Services;
 
 [TestFixture]
 public class UserServiceTests
