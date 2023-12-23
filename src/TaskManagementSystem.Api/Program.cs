@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using TaskManagementSystem.Api.Extensions;
 using TaskManagementSystem.Api.Identity;
 using TaskManagementSystem.Api.Services;
+using TaskManagementSystem.BLL.Contracts;
 using TaskManagementSystem.BLL.Extensions;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.DAL.Extensions;
@@ -70,13 +71,30 @@ async Task EnsureIdentityCreated(IServiceProvider serviceProvider)
 {
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    if (await roleManager.FindByNameAsync("User") is null)
+    if (await roleManager.FindByNameAsync(IdentityRoleNames.User) is null)
     {
-        await roleManager.CreateAsync(new IdentityRole("User"));
+        await roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.User));
     }
     
-    if (await roleManager.FindByNameAsync("Admin") is null)
+    if (await roleManager.FindByNameAsync(IdentityRoleNames.Admin) is null)
     {
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
+        await roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.Admin));
     }
+
+    var userService = serviceProvider.GetRequiredService<IUserService>();
+    var adminEmail = "admin@test.com";
+    var user = await userService.GetByEmailAsync(adminEmail);
+
+    if (user is null)
+    {
+        user = await userService.CreateUserAsync(new CreateUserContract
+        {
+            Name = "Admin",
+            Email = adminEmail,
+            Password = "Adm1nPasswordd"
+        });
+    }
+
+    var identityService = serviceProvider.GetRequiredService<IIdentityService>();
+    await identityService.TryGrantAdminRightsAsync(user.Id);
 }

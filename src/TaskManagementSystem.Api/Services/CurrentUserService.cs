@@ -10,11 +10,12 @@ public class CurrentUserService : ICurrentUserService
     public CurrentUserService(IHttpContextAccessor httpContextAccessor)
     {
         var user = httpContextAccessor.HttpContext?.User;
+        var userIdClaim = user?.FindFirstValue(IdentityClaims.UserIdClaim);
 
-        if (user is not null)
+        if (user is not null && userIdClaim is not null)
         {
-            // UserId = int.Parse(user.FindFirstValue(IdentityClaims.UserIdClaim));
-            // IsAdmin = user.HasClaim(IdentityClaims.IsAdminClaim, "true");
+            UserId = int.Parse(userIdClaim);
+            IsAdmin = user.HasClaim(IdentityClaims.IsAdminClaim, "true");
         }
     }
 

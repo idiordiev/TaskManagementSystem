@@ -2,6 +2,6 @@
 
 namespace TaskManagementSystem.DAL.Interfaces;
 
-public interface ISubtaskRepository : IRepository<Subtask>
+public interface ISubtaskRepository : IRepository<SubtaskEntity>
 {
 }

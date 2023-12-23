@@ -1,7 +1,7 @@
-﻿using Task = TaskManagementSystem.DAL.Entities.Task;
+﻿using TaskManagementSystem.DAL.Entities;
 
 namespace TaskManagementSystem.DAL.Interfaces;
 
-public interface ITaskRepository : IRepository<Task>
+public interface ITaskRepository : IRepository<TaskEntity>
 {
 }

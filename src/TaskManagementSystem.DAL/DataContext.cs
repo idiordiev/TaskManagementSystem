@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.DAL.Entities;
-using Task = TaskManagementSystem.DAL.Entities.Task;
 
 namespace TaskManagementSystem.DAL;
 
@@ -15,9 +14,9 @@ public class DataContext : DbContext
     {
     }
     
-    public DbSet<User> Users { get; set; }
-    public DbSet<Task> Tasks { get; set; }
-    public DbSet<Subtask> Subtasks { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
+    public DbSet<TaskEntity> Tasks { get; set; }
+    public DbSet<SubtaskEntity> Subtasks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

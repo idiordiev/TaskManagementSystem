@@ -1,38 +1,61 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TaskManagementSystem.Api.Identity;
 using TaskManagementSystem.BLL.Contracts;
+using TaskManagementSystem.BLL.Contracts.Responses;
 using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.DAL.Entities;
 
 namespace TaskManagementSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/users")]
-//[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly UserManager<Account> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public UserController(IUserService userService, UserManager<Account> userManager, RoleManager<IdentityRole> roleManager)
+    public UserController(IUserService userService)
     {
         _userService = userService;
-        _userManager = userManager;
-        _roleManager = roleManager;
     }
 
-    [HttpGet("grant-admin")]
-    public async Task<IActionResult> GrantAdmin()
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll(CancellationToken cancellationToken)
     {
-        var user = await _userManager.Users.Where(x => x.UserId == 2).FirstOrDefaultAsync();
+        var users = await _userService.GetAllAsync(cancellationToken);
+
+        return Ok(users);
+    }
     
-        await _roleManager.CreateAsync(new IdentityRole("User"));
-        await _roleManager.CreateAsync(new IdentityRole("Admin"));
-        
-        await _userManager.AddToRoleAsync(user, "Admin");
-    
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<UserEntity>> GetById(int id, CancellationToken cancellationToken)
+    {
+        var user = await _userService.GetByIdAsync(id, cancellationToken);
+
+        return Ok(user);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<UserEntity>> Create([FromBody] CreateUserContract createUserContract, CancellationToken cancellationToken)
+    {
+        var user = await _userService.CreateUserAsync(createUserContract, cancellationToken);
+
+        return Created(nameof(GetById), user);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<UserEntity>> Update(int id, [FromBody] UpdateUserContract updateUserContract, CancellationToken cancellationToken)
+    {
+        var user = await _userService.UpdateUserAsync(id, updateUserContract, cancellationToken);
+
+        return Ok(user);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        await _userService.DeactivateUserAsync(id, cancellationToken);
+
         return Ok();
     }
 }

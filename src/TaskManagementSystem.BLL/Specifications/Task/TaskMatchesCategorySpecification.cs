@@ -3,7 +3,7 @@ using TaskManagementSystem.BLL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Specifications.Task;
 
-public class TaskMatchesCategorySpecification : ISpecification<DAL.Entities.Task>
+public class TaskMatchesCategorySpecification : ISpecification<DAL.Entities.TaskEntity>
 {
     private readonly string[] _categories;
 
@@ -12,12 +12,12 @@ public class TaskMatchesCategorySpecification : ISpecification<DAL.Entities.Task
         _categories = categories;
     }
 
-    public bool IsSatisfiedBy(DAL.Entities.Task entity)
+    public bool IsSatisfiedBy(DAL.Entities.TaskEntity entity)
     {
         return _categories.Contains(entity.Category);
     }
     
-    public Expression<Func<DAL.Entities.Task, bool>> GetExpression()
+    public Expression<Func<DAL.Entities.TaskEntity, bool>> GetExpression()
     {
         return task => _categories.Contains(task.Category);
     }

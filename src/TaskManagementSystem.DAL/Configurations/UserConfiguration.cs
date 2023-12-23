@@ -4,9 +4,9 @@ using TaskManagementSystem.DAL.Entities;
 
 namespace TaskManagementSystem.DAL.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.HasKey(x => x.Id);
         

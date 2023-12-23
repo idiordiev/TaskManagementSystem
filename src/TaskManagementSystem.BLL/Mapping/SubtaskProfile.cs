@@ -8,6 +8,6 @@ public class SubtaskProfile : Profile
 {
     public SubtaskProfile()
     {
-        CreateMap<Subtask, SubtaskResponse>();
+        CreateMap<SubtaskEntity, SubtaskResponse>();
     }
 }

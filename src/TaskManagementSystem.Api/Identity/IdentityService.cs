@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using TaskManagementSystem.Api.Exceptions;
 using TaskManagementSystem.BLL.Exceptions;
 using TaskManagementSystem.BLL.Interfaces;
 
@@ -32,8 +33,17 @@ public class IdentityService : IIdentityService
             UserId = userId,
         };
 
-        await _userManager.CreateAsync(account);
-        await _userManager.AddPasswordAsync(account, password);
+        var createResult = await _userManager.CreateAsync(account, password);
+        if (!createResult.Succeeded)
+        {
+            throw new IdentityException(string.Join(";", createResult.Errors.Select(x => x.Description)));
+        }
+        
+        var addToRoleResult = await _userManager.AddToRoleAsync(account, IdentityRoleNames.User);
+        if (!addToRoleResult.Succeeded)
+        {
+            throw new IdentityException(string.Join(";", addToRoleResult.Errors.Select(x => x.Description)));
+        }
     }
 
     public async Task<string> GetTokenAsync(string email, string password)
@@ -54,7 +64,7 @@ public class IdentityService : IIdentityService
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(IdentityClaims.UserIdClaim, user.UserId.ToString()),
-            new Claim(IdentityClaims.IsAdminClaim, (await _userManager.IsInRoleAsync(user, "Admin")).ToString())
+            new Claim(IdentityClaims.IsAdminClaim, (await _userManager.IsInRoleAsync(user, IdentityRoleNames.Admin)).ToString())
         };
 
         foreach (var role in await _userManager.GetRolesAsync(user))
@@ -85,6 +95,19 @@ public class IdentityService : IIdentityService
         foreach (var account in accountsToDelete)
         {
             await _userManager.DeleteAsync(account);
+        }
+    }
+
+    public async Task TryGrantAdminRightsAsync(int userId, CancellationToken cancellationToken = default)
+    {
+        var users = await _userManager.Users.Where(x => x.UserId == userId).ToListAsync(cancellationToken);
+
+        foreach (var user in users)
+        {
+            if (!await _userManager.IsInRoleAsync(user, IdentityRoleNames.Admin))
+            {
+                await _userManager.AddToRoleAsync(user, IdentityRoleNames.Admin);
+            }
         }
     }
 }

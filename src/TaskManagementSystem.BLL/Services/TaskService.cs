@@ -9,8 +9,6 @@ using TaskManagementSystem.BLL.Utility;
 using TaskManagementSystem.DAL.Entities;
 using TaskManagementSystem.DAL.Enums;
 using TaskManagementSystem.DAL.Interfaces;
-using Task = System.Threading.Tasks.Task;
-using TaskEntity = TaskManagementSystem.DAL.Entities.Task;
 
 namespace TaskManagementSystem.BLL.Services;
 
@@ -34,10 +32,10 @@ public class TaskService : ITaskService
     {
         var specs = new List<ISpecification<TaskEntity>>();
         
-        // if (!_currentUserService.IsAdmin)
-        // {
-        //     specs.Add(new TaskBelongsToUserSpecification(_currentUserService.UserId));
-        // }
+        if (!_currentUserService.IsAdmin)
+        {
+            specs.Add(new TaskBelongsToUserSpecification(_currentUserService.UserId));
+        }
 
         if (filters.Categories.Length != 0)
         {
@@ -80,9 +78,14 @@ public class TaskService : ITaskService
 
     public async Task<TaskResponse> AddAsync(int userId, CreateTaskContract newTask, CancellationToken cancellationToken = default)
     {
+        if (!_currentUserService.IsAdmin && userId != _currentUserService.UserId)
+        {
+            throw new ForbiddenException();
+        }
+        
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId, cancellationToken);
 
-        if (user is null)
+        if (user is null || user.State == UserState.Deleted)
         {
             throw new NotFoundException("User", userId);
         }
@@ -92,8 +95,8 @@ public class TaskService : ITaskService
             Name = newTask.Name,
             State = TaskState.Pending,
             DeadLine = newTask.DeadLine?.ToUniversalTime(),
-            User = user,
-            Subtasks = newTask.Subtasks.Select(x => new Subtask
+            UserEntity = user,
+            Subtasks = newTask.Subtasks.Select(x => new SubtaskEntity
             {
                 Name = x.Name,
                 State = TaskState.Pending,
