@@ -30,13 +30,15 @@ public class TaskService : ITaskService
 
     public async Task<IEnumerable<TaskResponse>> GetTasksByUserIdAsync(int userId, TaskFiltersModel filters, CancellationToken cancellationToken = default)
     {
-        var specs = new List<ISpecification<TaskEntity>>();
-        
-        if (!_currentUserService.IsAdmin)
+        if (!_currentUserService.IsAdmin && userId != _currentUserService.UserId)
         {
-            specs.Add(new TaskBelongsToUserSpecification(_currentUserService.UserId));
+            throw new ForbiddenException();
         }
+        
+        var specs = new List<ISpecification<TaskEntity>>();
 
+        specs.Add(new TaskBelongsToUserSpecification(_currentUserService.UserId));
+        
         if (filters.Categories.Length != 0)
         {
             specs.Add(new TaskMatchesCategorySpecification(filters.Categories));
