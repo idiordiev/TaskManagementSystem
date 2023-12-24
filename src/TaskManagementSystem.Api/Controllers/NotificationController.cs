@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.Application.Interfaces;
-using TaskManagementSystem.Application.Models;
+using TaskManagementSystem.Application.Notifications.Models;
+using TaskManagementSystem.Application.Notifications.Queries;
 
 namespace TaskManagementSystem.Api.Controllers;
 
@@ -10,17 +11,18 @@ namespace TaskManagementSystem.Api.Controllers;
 [Authorize]
 public class NotificationController : ControllerBase
 {
-    private readonly INotificationService _notificationService;
+    private readonly IMediator _mediator;
 
-    public NotificationController(INotificationService notificationService)
+    public NotificationController(IMediator mediator)
     {
-        _notificationService = notificationService;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Notification>>> GetAll(int userId, CancellationToken cancellationToken)
     {
-        var notifications = await _notificationService.GetNotificationsAsync(userId, cancellationToken);
+        var query = new GetNotificationsQuery { UserId = userId };
+        var notifications = await _mediator.Send(query, cancellationToken);
 
         return Ok(notifications);
     }

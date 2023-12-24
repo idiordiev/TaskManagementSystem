@@ -1,6 +1,6 @@
 ﻿using TaskManagementSystem.Domain.Enums;
 
-namespace TaskManagementSystem.Application.Contracts.Responses;
+namespace TaskManagementSystem.Application.Users.Models;
 
 public class UserResponse
 {

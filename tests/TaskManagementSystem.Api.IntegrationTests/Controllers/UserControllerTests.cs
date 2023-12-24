@@ -3,8 +3,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using TaskManagementSystem.Api.IntegrationTests.Controllers.Fixtures;
-using TaskManagementSystem.Application.Contracts;
-using TaskManagementSystem.Application.Contracts.Responses;
+using TaskManagementSystem.Application.Users.Commands;
+using TaskManagementSystem.Application.Users.Models;
 using TaskManagementSystem.Infrastructure.Identity;
 using Xunit;
 
@@ -37,8 +37,8 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         var tokenRequest = new TokenRequest
         {
-            Email = _state.CreateUserContract.Email,
-            Password = _state.CreateUserContract.Password
+            Email = _state.CreateUserCommand.Email,
+            Password = _state.CreateUserCommand.Password
         };
         var response = await _client.PostAsJsonAsync("/api/auth/login", tokenRequest);
         return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
@@ -119,7 +119,7 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         // Arrange
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
-        var createUserContract = _state.CreateUserContract;
+        var createUserContract = _state.CreateUserCommand;
         
         // Act
         var response = await _client.PostAsJsonAsync("/api/users", createUserContract);
@@ -140,7 +140,7 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         // Arrange
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
-        var createUserContract = new CreateUserContract
+        var createUserContract = new CreateUserCommand
         {
             Name = "admin",
             Email = "admin@test.com",
@@ -159,7 +159,7 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         // Arrange
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
-        var updateUserContract = new UpdateUserContract
+        var updateUserContract = new UpdateUserCommand
         {
             Name = "admin new name"
         };
@@ -181,7 +181,7 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         // Arrange
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
-        var updateUserContract = new UpdateUserContract
+        var updateUserContract = new UpdateUserCommand
         {
             Name = "not existing user new name"
         };

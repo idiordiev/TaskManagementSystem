@@ -3,8 +3,9 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using TaskManagementSystem.Api.IntegrationTests.Controllers.Fixtures;
-using TaskManagementSystem.Application.Contracts;
-using TaskManagementSystem.Application.Contracts.Responses;
+using TaskManagementSystem.Application.Subtasks.Commands;
+using TaskManagementSystem.Application.Tasks.Commands;
+using TaskManagementSystem.Application.Tasks.Models;
 using TaskManagementSystem.Domain.Enums;
 using TaskManagementSystem.Infrastructure.Identity;
 using Xunit;
@@ -40,15 +41,15 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         // Arrange
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
-        var createTaskContract = new CreateTaskContract
+        var createTaskContract = new CreateTaskCommand
         {
             Name = "New task",
             Category = "somecat",
             DeadLine = null,
-            Subtasks = new List<CreateSubtaskContract>
+            Subtasks = new List<CreateSubtaskCommand>
             {
-                new CreateSubtaskContract { Name = "Subtask1" },
-                new CreateSubtaskContract { Name = "Subtask2" },
+                new CreateSubtaskCommand { Name = "Subtask1" },
+                new CreateSubtaskCommand { Name = "Subtask2" },
             }
         };
 
@@ -129,7 +130,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         // Arrange
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
-        var updateTaskContract = new UpdateTaskContract()
+        var updateTaskContract = new UpdateTaskCommand()
         {
             Name = "NewName for task",
             DeadLine = new DateTime(2023, 12, 24, 12, 45, 23, DateTimeKind.Utc),
@@ -148,7 +149,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     {
         // Arrange
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
-        var updateTaskContract = new UpdateTaskContract()
+        var updateTaskContract = new UpdateTaskCommand()
         {
             Name = "NewName for task",
             DeadLine = new DateTime(2023, 12, 24, 12, 45, 23, DateTimeKind.Utc),

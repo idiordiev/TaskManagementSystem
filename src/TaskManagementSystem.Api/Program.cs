@@ -1,12 +1,14 @@
 using System.Text;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using TaskManagementSystem.Api.Middlewares;
 using TaskManagementSystem.Api.Services;
-using TaskManagementSystem.Application.Contracts;
 using TaskManagementSystem.Application.Extensions;
 using TaskManagementSystem.Application.Interfaces;
+using TaskManagementSystem.Application.Users.Commands;
+using TaskManagementSystem.Application.Users.Queries;
 using TaskManagementSystem.Infrastructure.Extensions;
 using TaskManagementSystem.Infrastructure.Identity;
 
@@ -81,18 +83,21 @@ async Task EnsureIdentityCreated(IServiceProvider serviceProvider)
         await roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.Admin));
     }
 
-    var userService = serviceProvider.GetRequiredService<IUserService>();
+    var mediator = serviceProvider.GetRequiredService<IMediator>();
     var adminEmail = "admin@test.com";
-    var user = await userService.GetByEmailAsync(adminEmail);
+    var query = new GetUserByEmailQuery { Email = adminEmail };
+    var user = await mediator.Send(query);
 
     if (user is null)
     {
-        user = await userService.CreateAsync(new CreateUserContract
+        var createCommand = new CreateUserCommand
         {
             Name = "Admin",
             Email = adminEmail,
             Password = "Adm1nPasswordd"
-        });
+        };
+
+        user = await mediator.Send(createCommand);
     }
 
     var identityService = serviceProvider.GetRequiredService<IIdentityService>();

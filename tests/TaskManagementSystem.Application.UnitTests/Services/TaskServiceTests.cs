@@ -3,12 +3,13 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using TaskManagementSystem.Application.Contracts;
 using TaskManagementSystem.Application.Exceptions;
 using TaskManagementSystem.Application.Interfaces;
 using TaskManagementSystem.Application.Mapping;
 using TaskManagementSystem.Application.Models;
-using TaskManagementSystem.Application.Services;
+using TaskManagementSystem.Application.Subtasks.Commands;
+using TaskManagementSystem.Application.Tasks.Commands;
+using TaskManagementSystem.Application.Tasks.Queries;
 using TaskManagementSystem.Domain.Entities;
 using TaskManagementSystem.Domain.Enums;
 
@@ -31,7 +32,7 @@ public class TaskServiceTests
     }
 
     [Test]
-    public async Task GetTasksByUserIdAsync_WithoutFilters_ReturnsTasks()
+    public async Task GetTasksByUserIdQuery_WithoutFilters_ReturnsTasks()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -42,11 +43,12 @@ public class TaskServiceTests
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
-        
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+
+        var query = new GetTasksByUserIdQuery { UserId = 1 };
+        var handler = new GetTasksByUserIdQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var tasks = await service.GetTasksByUserIdAsync(1, new TaskFiltersModel());
+        var tasks = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         tasks.Count().Should().Be(3);
@@ -54,7 +56,7 @@ public class TaskServiceTests
     }
 
     [Test]
-    public async Task GetTasksByUserIdAsync_WrongUserAndNotAdmin_ThrowsForbiddenException()
+    public async Task GetTasksByUserIdQuery_WrongUserAndNotAdmin_ThrowsForbiddenException()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -64,17 +66,18 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var query = new GetTasksByUserIdQuery { UserId = 2 };
+        var handler = new GetTasksByUserIdQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var action = () => service.GetTasksByUserIdAsync(2, new TaskFiltersModel());
+        var action = () => handler.Handle(query, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<ForbiddenException>();
     }
     
     [Test]
-    public async Task GetTasksByUserIdAsync_FilterByState_ReturnsTasksWithCorrectState()
+    public async Task GetTasksByUserIdQuery_FilterByState_ReturnsTasksWithCorrectState()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -86,10 +89,11 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var query = new GetTasksByUserIdQuery { UserId = 1, Filters = new TaskFiltersModel { States = [TaskState.Pending] }};
+        var handler = new GetTasksByUserIdQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var tasks = await service.GetTasksByUserIdAsync(1, new TaskFiltersModel { States = [TaskState.Pending] });
+        var tasks = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         tasks.Count().Should().Be(2);
@@ -97,7 +101,7 @@ public class TaskServiceTests
     }
     
     [Test]
-    public async Task GetTasksByUserIdAsync_FilterByCategory_ReturnsTasksWithCorrectCategory()
+    public async Task GetTasksByUserIdQuery_FilterByCategory_ReturnsTasksWithCorrectCategory()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -109,10 +113,11 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var query = new GetTasksByUserIdQuery { UserId = 1, Filters = new TaskFiltersModel { Categories = ["cat1"] }};
+        var handler = new GetTasksByUserIdQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var tasks = await service.GetTasksByUserIdAsync(1, new TaskFiltersModel { Categories = ["cat1"] });
+        var tasks = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         tasks.Count().Should().Be(2);
@@ -120,7 +125,7 @@ public class TaskServiceTests
     }
     
     [Test]
-    public async Task GetByIdAsync_TaskExists_ReturnTaskResponseWithSubtasks()
+    public async Task GetTaskByIdQuery_TaskExists_ReturnTaskResponseWithSubtasks()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -132,10 +137,11 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var query = new GetTaskByIdQuery { TaskId = 2 };
+        var handler = new GetTaskByIdQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var task = await service.GetByIdAsync(2);
+        var task = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         task.Should().NotBeNull();
@@ -149,7 +155,7 @@ public class TaskServiceTests
     }
     
     [Test]
-    public async Task GetByIdAsync_TaskDoesNotExists_ReturnNull()
+    public async Task GetTaskByIdQuery_TaskDoesNotExists_ReturnNull()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -161,17 +167,18 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var query = new GetTaskByIdQuery { TaskId = -1 };
+        var handler = new GetTaskByIdQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var task = await service.GetByIdAsync(-1);
+        var task = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         task.Should().BeNull();
     }
     
     [Test]
-    public async Task GetByIdAsync_WrongUserAndNotAdmin_ReturnNull()
+    public async Task GetTaskByIdQuery_WrongUserAndNotAdmin_ReturnNull()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -183,17 +190,18 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var query = new GetTaskByIdQuery { TaskId = 4 };
+        var handler = new GetTaskByIdQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var task = await service.GetByIdAsync(4);
+        var task = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         task.Should().BeNull();
     }
     
     [Test]
-    public async Task AddAsync_WrongUserAndNotAdmin_ThrowsForbiddenException()
+    public async Task CreateTaskCommand_WrongUserAndNotAdmin_ThrowsForbiddenException()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -203,17 +211,17 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new CreateTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var action = () => service.AddAsync(2, new CreateTaskContract());
+        var action = () => handler.Handle(new CreateTaskCommand { UserId = 2 }, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<ForbiddenException>();
     }
     
     [Test]
-    public async Task AddAsync_DeletedUser_ThrowsForbiddenException()
+    public async Task CreateTaskCommand_DeletedUser_ThrowsForbiddenException()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -224,17 +232,17 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(2);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new CreateTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var action = () => service.AddAsync(2, new CreateTaskContract());
+        var action = () => handler.Handle(new CreateTaskCommand { UserId = 2 }, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<NotFoundException>();
     }
     
     [Test]
-    public async Task AddAsync_CorrectUser_ThrowsForbiddenException()
+    public async Task CreateTaskCommand_CorrectUser_ThrowsForbiddenException()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -249,21 +257,22 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new CreateTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         var deadLine = new DateTime(2023, 12, 25, 12, 56, 46, DateTimeKind.Utc);
-        var createTaskContract = new CreateTaskContract()
+        var command = new CreateTaskCommand
         {
+            UserId = 1,
             Name = "New task",
             DeadLine = deadLine,
             Category = "category1",
-            Subtasks = new List<CreateSubtaskContract>
+            Subtasks = new List<CreateSubtaskCommand>
             {
-                new CreateSubtaskContract
+                new CreateSubtaskCommand
                 {
                     Name = "Subtask1"
                 },
-                new CreateSubtaskContract
+                new CreateSubtaskCommand
                 {
                     Name = "Subtask2"
                 }
@@ -271,28 +280,28 @@ public class TaskServiceTests
         };
 
         // Act
-        var newTask = await service.AddAsync(1, createTaskContract);
+        var task = await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        mockUnitOfWork.Verify(x => x.TaskRepository.AddAsync(It.Is<TaskEntity>(t => t.Name == createTaskContract.Name
+        mockUnitOfWork.Verify(x => x.TaskRepository.AddAsync(It.Is<TaskEntity>(t => t.Name == command.Name
                 && t.State == TaskState.Pending
-                && t.DeadLine == createTaskContract.DeadLine
+                && t.DeadLine == command.DeadLine
                 && t.User.Id == 1
-                && t.Category == createTaskContract.Category
+                && t.Category == command.Category
                 && t.Subtasks.Count == 2
                 && t.Subtasks.Any(s => s.Name == "Subtask1")
                 && t.Subtasks.Any(s => s.Name == "Subtask2")), 
             It.IsAny<CancellationToken>()));
 
-        newTask.Should().NotBeNull();
-        newTask.Name.Should().Be(createTaskContract.Name);
-        newTask.DeadLine.Should().Be(createTaskContract.DeadLine);
-        newTask.Category.Should().Be(createTaskContract.Category);
-        newTask.Subtasks.Should().NotBeEmpty();
+        task.Should().NotBeNull();
+        task.Name.Should().Be(command.Name);
+        task.DeadLine.Should().Be(command.DeadLine);
+        task.Category.Should().Be(command.Category);
+        task.Subtasks.Should().NotBeEmpty();
     }
     
     [Test]
-    public async Task UpdateAsync_TaskExists_UpdatesTask()
+    public async Task UpdateTaskCommand_TaskExists_UpdatesTask()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -306,38 +315,38 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
-
-        var updateTaskContract = new UpdateTaskContract
+        var handler = new UpdateTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var command = new UpdateTaskCommand
         {
+            TaskId = 1,
             Name = "New name",
             DeadLine = new DateTime(2023, 12, 30, 12, 14, 15, DateTimeKind.Utc),
             State = TaskState.InProgress
         };
 
         // Act
-        var task = await service.UpdateAsync(1, updateTaskContract);
+        var task = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         mockUnitOfWork.Verify(x => x.TaskRepository.Update(It.Is<TaskEntity>(t => t.Id == 1
-            && t.Name == updateTaskContract.Name
-            && t.DeadLine == updateTaskContract.DeadLine
-            && t.State == updateTaskContract.State
+            && t.Name == command.Name
+            && t.DeadLine == command.DeadLine
+            && t.State == command.State
             && t.Category == "cat1"
             && t.UserId == 1)));
         mockUnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         
         task.Should().NotBeNull();
         task.Id.Should().Be(1);
-        task.Name.Should().Be(updateTaskContract.Name);
-        task.DeadLine.Should().Be(updateTaskContract.DeadLine);
-        task.State.Should().Be(updateTaskContract.State);
+        task.Name.Should().Be(command.Name);
+        task.DeadLine.Should().Be(command.DeadLine);
+        task.State.Should().Be(command.State);
         task.Category.Should().Be("cat1");
         task.UserId.Should().Be(1);
     }
     
     [Test]
-    public async Task UpdateAsync_TaskDoesNotExists_ThrowsNotFoundException()
+    public async Task UpdateTaskCommand_TaskDoesNotExists_ThrowsNotFoundException()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -349,17 +358,17 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new UpdateTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var action = () => service.UpdateAsync(-1, new UpdateTaskContract());
+        var action = () => handler.Handle(new UpdateTaskCommand { TaskId = -1 }, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<NotFoundException>();
     }
     
     [Test]
-    public async Task UpdateAsync_WrongUserAndNotAdmin_ThrowsForbiddenException()
+    public async Task UpdateTaskCommand_WrongUserAndNotAdmin_ThrowsForbiddenException()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -371,10 +380,10 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new UpdateTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
 
         // Act
-        var action = () => service.UpdateAsync(4, new UpdateTaskContract());
+        var action = () => handler.Handle(new UpdateTaskCommand { TaskId = 4 }, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<ForbiddenException>();
@@ -395,10 +404,10 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new DeleteTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object);
 
         // Act
-        await service.DeleteByIdAsync(1);
+        await handler.Handle(new DeleteTaskCommand() { TaskId = 1 }, CancellationToken.None);
 
         // Assert
         mockUnitOfWork.Verify(x => x.TaskRepository.Delete(It.Is<TaskEntity>(t => t.Id == 1)));
@@ -418,10 +427,10 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new DeleteTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object);
 
         // Act
-        var action = () => service.DeleteByIdAsync(-1);
+        var action = () => handler.Handle(new DeleteTaskCommand { TaskId = -1 }, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<NotFoundException>();
@@ -440,10 +449,10 @@ public class TaskServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new TaskService(mockUnitOfWork.Object, mockCurrentUserService.Object, _mapper);
+        var handler = new DeleteTaskCommandHandler(mockUnitOfWork.Object, mockCurrentUserService.Object);
 
         // Act
-        var action = () => service.DeleteByIdAsync(4);
+        var action = () => handler.Handle(new DeleteTaskCommand { TaskId = 4 }, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<ForbiddenException>();

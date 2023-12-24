@@ -1,4 +1,4 @@
-﻿namespace TaskManagementSystem.Application.Models;
+﻿namespace TaskManagementSystem.Application.Notifications.Models;
 
 public class Notification
 {

@@ -2,8 +2,8 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using FluentAssertions;
-using TaskManagementSystem.Application.Contracts;
-using TaskManagementSystem.Application.Contracts.Responses;
+using TaskManagementSystem.Application.Users.Commands;
+using TaskManagementSystem.Application.Users.Models;
 using TaskManagementSystem.Infrastructure.Identity;
 using Xunit;
 
@@ -58,7 +58,7 @@ public class AuthControllerTests : IClassFixture<ApplicationFactory>
     public async Task Register_UserExists_ReturnsBadRequest()
     {
         // Arrange
-        var createUserContract = new CreateUserContract
+        var createUserContract = new CreateUserCommand
         {
             Name = "admin",
             Email = "admin@test.com",
@@ -76,7 +76,7 @@ public class AuthControllerTests : IClassFixture<ApplicationFactory>
     public async Task Register_UserDoesNotExist_CreatesUser()
     {
         // Arrange
-        var createUserContract = new CreateUserContract
+        var createUserContract = new CreateUserCommand
         {
             Name = "admin2",
             Email = "admin123124@test.com",

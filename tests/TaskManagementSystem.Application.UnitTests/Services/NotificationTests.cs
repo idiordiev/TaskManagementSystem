@@ -4,16 +4,16 @@ using Moq;
 using NUnit.Framework;
 using TaskManagementSystem.Application.Exceptions;
 using TaskManagementSystem.Application.Interfaces;
-using TaskManagementSystem.Application.Services;
+using TaskManagementSystem.Application.Notifications.Queries;
 using TaskManagementSystem.Domain.Entities;
 
 namespace TaskManagementSystem.Application.UnitTests.Services;
 
 [TestFixture]
-public class NotificationServiceTests
+public class NotificationTests
 {
     [Test]
-    public async Task GetNotificationAsync_UpcomingTasksExists_ReturnsNotifications()
+    public async Task GetNotificationQuery_UpcomingTasksExists_ReturnsNotifications()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -25,12 +25,13 @@ public class NotificationServiceTests
             .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Tasks.Where(predicate.Compile()).ToList());
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
-        
-        var service = new NotificationService(mockUnitOfWork.Object, mockCurrentUserService.Object,
+
+        var query = new GetNotificationsQuery { UserId = 1 };
+        var handler = new GetNotificationsQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object,
             mockTimeProvider.Object);
 
         // Act
-        var notifications = await service.GetNotificationsAsync(1);
+        var notifications = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         notifications.Should().NotBeEmpty();
@@ -41,7 +42,7 @@ public class NotificationServiceTests
     }
     
     [Test]
-    public async Task GetNotificationAsync_NoUpcomingTasks_ReturnsEmptyList()
+    public async Task GetNotificationQuery_NoUpcomingTasks_ReturnsEmptyList()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -54,18 +55,19 @@ public class NotificationServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new NotificationService(mockUnitOfWork.Object, mockCurrentUserService.Object,
+        var query = new GetNotificationsQuery { UserId = 1 };
+        var handler = new GetNotificationsQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object,
             mockTimeProvider.Object);
 
         // Act
-        var notifications = await service.GetNotificationsAsync(1);
+        var notifications = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         notifications.Should().BeEmpty();
     }
     
     [Test]
-    public async Task GetNotificationAsync_PastTasks_ReturnsEmptyList()
+    public async Task GetNotificationQuery_PastTasks_ReturnsEmptyList()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -78,18 +80,19 @@ public class NotificationServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new NotificationService(mockUnitOfWork.Object, mockCurrentUserService.Object,
+        var query = new GetNotificationsQuery { UserId = 1 };
+        var handler = new GetNotificationsQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object,
             mockTimeProvider.Object);
 
         // Act
-        var notifications = await service.GetNotificationsAsync(1);
+        var notifications = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         notifications.Should().BeEmpty();
     }
 
     [Test]
-    public async Task GetNotificationAsync_NotAdminAndWrongUser_ThrowsForbiddenException()
+    public async Task GetNotificationQuery_NotAdminAndWrongUser_ThrowsForbiddenException()
     {
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
@@ -101,11 +104,12 @@ public class NotificationServiceTests
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
-        var service = new NotificationService(mockUnitOfWork.Object, mockCurrentUserService.Object,
+        var query = new GetNotificationsQuery { UserId = 2 };
+        var handler = new GetNotificationsQueryHandler(mockUnitOfWork.Object, mockCurrentUserService.Object,
             mockTimeProvider.Object);
 
         // Act
-        var action = () => service.GetNotificationsAsync(2);
+        var action = () => handler.Handle(query, CancellationToken.None);
 
         // Assert
         await action.Should().ThrowAsync<ForbiddenException>();

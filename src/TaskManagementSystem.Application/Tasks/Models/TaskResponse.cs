@@ -1,6 +1,7 @@
-﻿using TaskManagementSystem.Domain.Enums;
+﻿using TaskManagementSystem.Application.Subtasks.Models;
+using TaskManagementSystem.Domain.Enums;
 
-namespace TaskManagementSystem.Application.Contracts.Responses;
+namespace TaskManagementSystem.Application.Tasks.Models;
 
 public class TaskResponse
 {

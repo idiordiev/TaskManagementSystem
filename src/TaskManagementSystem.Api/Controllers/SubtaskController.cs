@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.Application.Contracts;
-using TaskManagementSystem.Application.Contracts.Responses;
-using TaskManagementSystem.Application.Interfaces;
+using TaskManagementSystem.Application.Subtasks.Commands;
+using TaskManagementSystem.Application.Subtasks.Models;
+using TaskManagementSystem.Application.Subtasks.Queries;
 
 namespace TaskManagementSystem.Api.Controllers;
 
@@ -11,17 +12,18 @@ namespace TaskManagementSystem.Api.Controllers;
 [Authorize]
 public class SubtaskController : ControllerBase
 {
-    private readonly ISubtaskService _subtaskService;
+    private readonly IMediator _mediator;
 
-    public SubtaskController(ISubtaskService subtaskService)
+    public SubtaskController(IMediator mediator)
     {
-        _subtaskService = subtaskService;
+        _mediator = mediator;
     }
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SubtaskResponse>>> GetByTaskId(int taskId, CancellationToken cancellationToken)
     {
-        var subtasks = await _subtaskService.GetSubtasksByTaskIdAsync(taskId, cancellationToken);
+        var query = new GetSubtasksByTaskIdQuery { TaskId = taskId };
+        var subtasks = await _mediator.Send(query, cancellationToken);
 
         return Ok(subtasks);
     }
@@ -29,7 +31,8 @@ public class SubtaskController : ControllerBase
     [HttpGet("{subtaskId:int}")]
     public async Task<ActionResult<SubtaskResponse>> GetById(int subtaskId, CancellationToken cancellationToken)
     {
-        var subtask = await _subtaskService.GetByIdAsync(subtaskId, cancellationToken);
+        var query = new GetSubtaskByIdQuery { SubtaskId = subtaskId };
+        var subtask = await _mediator.Send(query, cancellationToken);
 
         if (subtask is null)
         {
@@ -40,19 +43,21 @@ public class SubtaskController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<SubtaskResponse>> Create(int taskId, [FromBody] CreateSubtaskContract createSubtaskContract,
+    public async Task<ActionResult<SubtaskResponse>> Create(int taskId, [FromBody] CreateSubtaskCommand createSubtaskCommand,
         CancellationToken cancellationToken)
     {
-        var subtask = await _subtaskService.AddToTaskAsync(taskId, createSubtaskContract, cancellationToken);
+        createSubtaskCommand.TaskId = taskId;
+        var subtask = await _mediator.Send(createSubtaskCommand, cancellationToken);
 
         return Created(nameof(GetById), subtask);
     }
     
     [HttpPut("{subtaskId:int}")]
-    public async Task<ActionResult<IEnumerable<SubtaskResponse>>> Update(int subtaskId, [FromBody] UpdateSubtaskContract updateSubtaskContract,
+    public async Task<ActionResult<IEnumerable<SubtaskResponse>>> Update(int subtaskId, [FromBody] UpdateSubtaskCommand updateSubtaskCommand,
         CancellationToken cancellationToken)
     {
-        var subtask = await _subtaskService.UpdateAsync(subtaskId, updateSubtaskContract, cancellationToken);
+        updateSubtaskCommand.SubtaskId = subtaskId;
+        var subtask = await _mediator.Send(updateSubtaskCommand, cancellationToken);
 
         return Ok(subtask);
     }
@@ -60,7 +65,8 @@ public class SubtaskController : ControllerBase
     [HttpDelete("{subtaskId:int}")]
     public async Task<ActionResult<IEnumerable<Task>>> Delete(int subtaskId, CancellationToken cancellationToken)
     {
-        await _subtaskService.DeleteAsync(subtaskId, cancellationToken);
+        var command = new DeleteSubtaskCommand { SubtaskId = subtaskId };
+        await _mediator.Send(command, cancellationToken);
 
         return Ok();
     }
