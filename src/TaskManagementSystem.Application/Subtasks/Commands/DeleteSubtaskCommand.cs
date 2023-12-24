@@ -28,7 +28,7 @@ public class DeleteSubtaskCommandHandler : IRequestHandler<DeleteSubtaskCommand>
         {
             throw new NotFoundException("Subtask", request.SubtaskId);
         }
-        
+
         if (!_currentUserService.IsAdmin && subtask.Task.UserId != _currentUserService.UserId)
         {
             throw new NotFoundException("Subtask", request.SubtaskId);

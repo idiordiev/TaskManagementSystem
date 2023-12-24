@@ -8,7 +8,7 @@ public class IdentityContext : IdentityDbContext<Account>
     public IdentityContext()
     {
     }
-    
+
     public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
     {
     }

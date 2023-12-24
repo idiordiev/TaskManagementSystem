@@ -18,16 +18,17 @@ public class SubtaskController : ControllerBase
     {
         _mediator = mediator;
     }
-    
+
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SubtaskResponse>>> GetByTaskId(int taskId, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<SubtaskResponse>>> GetByTaskId(int taskId,
+        CancellationToken cancellationToken)
     {
         var query = new GetSubtasksByTaskIdQuery { TaskId = taskId };
         var subtasks = await _mediator.Send(query, cancellationToken);
 
         return Ok(subtasks);
     }
-    
+
     [HttpGet("{subtaskId:int}")]
     public async Task<ActionResult<SubtaskResponse>> GetById(int subtaskId, CancellationToken cancellationToken)
     {
@@ -38,12 +39,13 @@ public class SubtaskController : ControllerBase
         {
             return NotFound();
         }
-        
+
         return Ok(subtask);
     }
-    
+
     [HttpPost]
-    public async Task<ActionResult<SubtaskResponse>> Create(int taskId, [FromBody] CreateSubtaskCommand createSubtaskCommand,
+    public async Task<ActionResult<SubtaskResponse>> Create(int taskId,
+        [FromBody] CreateSubtaskCommand createSubtaskCommand,
         CancellationToken cancellationToken)
     {
         createSubtaskCommand.TaskId = taskId;
@@ -51,9 +53,10 @@ public class SubtaskController : ControllerBase
 
         return Created(nameof(GetById), subtask);
     }
-    
+
     [HttpPut("{subtaskId:int}")]
-    public async Task<ActionResult<IEnumerable<SubtaskResponse>>> Update(int subtaskId, [FromBody] UpdateSubtaskCommand updateSubtaskCommand,
+    public async Task<ActionResult<IEnumerable<SubtaskResponse>>> Update(int subtaskId,
+        [FromBody] UpdateSubtaskCommand updateSubtaskCommand,
         CancellationToken cancellationToken)
     {
         updateSubtaskCommand.SubtaskId = subtaskId;
@@ -61,7 +64,7 @@ public class SubtaskController : ControllerBase
 
         return Ok(subtask);
     }
-    
+
     [HttpDelete("{subtaskId:int}")]
     public async Task<ActionResult<IEnumerable<Task>>> Delete(int subtaskId, CancellationToken cancellationToken)
     {

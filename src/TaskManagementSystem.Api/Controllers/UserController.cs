@@ -28,13 +28,13 @@ public class UserController : ControllerBase
 
         return Ok(users);
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<UserEntity>> GetById(int id, CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery { UserId = id };
         var user = await _mediator.Send(query, cancellationToken);
-        
+
         if (user is null)
         {
             return NotFound();
@@ -44,7 +44,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserEntity>> Create([FromBody] CreateUserCommand createUserCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserEntity>> Create([FromBody] CreateUserCommand createUserCommand,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -59,7 +60,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<UserEntity>> Update(int id, [FromBody] UpdateUserCommand updateUserCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserEntity>> Update(int id, [FromBody] UpdateUserCommand updateUserCommand,
+        CancellationToken cancellationToken)
     {
         updateUserCommand.Id = id;
         var user = await _mediator.Send(updateUserCommand, cancellationToken);

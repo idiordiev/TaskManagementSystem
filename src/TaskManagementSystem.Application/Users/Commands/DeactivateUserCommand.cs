@@ -29,9 +29,9 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
         {
             throw new NotFoundException("User", request.UserId);
         }
-        
+
         await _identityService.DeleteAccountsForUserAsync(user.Id, cancellationToken);
-        
+
         user.State = UserState.Deleted;
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

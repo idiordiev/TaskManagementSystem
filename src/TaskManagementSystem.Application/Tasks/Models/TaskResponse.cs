@@ -11,5 +11,5 @@ public class TaskResponse
     public TaskState State { get; set; }
     public DateTime? DeadLine { get; set; }
     public string Category { get; set; }
-    public IEnumerable<SubtaskResponse> Subtasks { get; set; } 
+    public IEnumerable<SubtaskResponse> Subtasks { get; set; }
 }

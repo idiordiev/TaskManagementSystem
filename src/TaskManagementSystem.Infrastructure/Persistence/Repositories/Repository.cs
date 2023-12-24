@@ -16,7 +16,8 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
         DbSet = Context.Set<TEntity>();
     }
 
-    public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
     {
         if (predicate is not null)
         {

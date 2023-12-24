@@ -17,7 +17,7 @@ public class TaskMatchesCategorySpecification : ISpecification<TaskEntity>
     {
         return _categories.Contains(entity.Category);
     }
-    
+
     public Expression<Func<TaskEntity, bool>> GetExpression()
     {
         return task => _categories.Contains(task.Category);

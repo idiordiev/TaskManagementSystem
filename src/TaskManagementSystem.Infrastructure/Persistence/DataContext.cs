@@ -13,7 +13,7 @@ public class DataContext : DbContext
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
-    
+
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<TaskEntity> Tasks { get; set; }
     public DbSet<SubtaskEntity> Subtasks { get; set; }
@@ -21,7 +21,7 @@ public class DataContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

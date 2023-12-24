@@ -21,7 +21,8 @@ public class GetActiveUsersQueryHandler : IRequestHandler<GetActiveUsersQuery, I
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<UserResponse>> Handle(GetActiveUsersQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserResponse>> Handle(GetActiveUsersQuery request,
+        CancellationToken cancellationToken)
     {
         var users = await _unitOfWork.UserRepository.GetAsync(x => x.State != UserState.Deleted, cancellationToken);
 

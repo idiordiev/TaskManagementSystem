@@ -12,11 +12,11 @@ public class CreateUserCommand : IRequest<UserResponse>
 {
     [Required]
     public string Name { get; set; }
-    
+
     [Required]
     [EmailAddress]
     public string Email { get; set; }
-    
+
     [Required]
     [MinLength(10)]
     [MaxLength(64)]
@@ -43,7 +43,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserR
         {
             throw new UserExistsException($"User with email {request.Email} already exists");
         }
-        
+
         var user = new UserEntity
         {
             Name = request.Name,

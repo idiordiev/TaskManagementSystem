@@ -11,7 +11,8 @@ public class UserRepository : Repository<UserEntity>, IUserRepository
     {
     }
 
-    public async Task<bool> CheckIfActiveUserWithSameEmailExistsAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<bool> CheckIfActiveUserWithSameEmailExistsAsync(string email,
+        CancellationToken cancellationToken = default)
     {
         return await Context.Users.AnyAsync(x => x.Email == email && x.State == UserState.Active, cancellationToken);
     }

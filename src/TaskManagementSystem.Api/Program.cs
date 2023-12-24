@@ -77,7 +77,7 @@ async Task EnsureIdentityCreated(IServiceProvider serviceProvider)
     {
         await roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.User));
     }
-    
+
     if (await roleManager.FindByNameAsync(IdentityRoleNames.Admin) is null)
     {
         await roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.Admin));

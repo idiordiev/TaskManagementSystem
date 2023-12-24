@@ -17,15 +17,14 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
-    
-    
+
     private static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<IdentityContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"));
         });
-        
+
         services.AddIdentity<Account, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;

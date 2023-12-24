@@ -17,14 +17,16 @@ public class GetNotificationsQueryHandler : IRequestHandler<GetNotificationsQuer
     private readonly ICurrentUserService _currentUserService;
     private readonly TimeProvider _timeProvider;
 
-    public GetNotificationsQueryHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, TimeProvider timeProvider)
+    public GetNotificationsQueryHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService,
+        TimeProvider timeProvider)
     {
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
         _timeProvider = timeProvider;
     }
 
-    public async Task<IEnumerable<Notification>> Handle(GetNotificationsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Notification>> Handle(GetNotificationsQuery request,
+        CancellationToken cancellationToken)
     {
         if (!_currentUserService.IsAdmin && request.UserId != _currentUserService.UserId)
         {
@@ -33,16 +35,16 @@ public class GetNotificationsQueryHandler : IRequestHandler<GetNotificationsQuer
 
         var now = _timeProvider.GetUtcNow();
 
-        var tasks = await _unitOfWork.TaskRepository.GetAsync(x => x.UserId == request.UserId 
+        var tasks = await _unitOfWork.TaskRepository.GetAsync(x => x.UserId == request.UserId
                                                                    && x.DeadLine >= now
                                                                    && x.DeadLine <= now.AddDays(1),
             cancellationToken);
         var notifications = new List<Notification>();
-        
+
         foreach (var task in tasks)
         {
             var expiresIn = task.DeadLine!.Value - now;
-            
+
             notifications.Add(new Notification
             {
                 UserId = task.UserId,

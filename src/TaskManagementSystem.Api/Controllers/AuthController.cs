@@ -15,30 +15,31 @@ public class AuthController : ControllerBase
 {
     private readonly IIdentityService _identityService;
     private readonly IMediator _mediator;
-    
+
     public AuthController(IIdentityService identityService, IMediator mediator)
     {
         _identityService = identityService;
         _mediator = mediator;
     }
-    
+
     [HttpPost]
     [Route("login")]
     [AllowAnonymous]
     public async Task<ActionResult<TokenResponse>> GetToken([FromBody] TokenRequest tokenRequest)
     {
         var token = await _identityService.GetTokenAsync(tokenRequest.Email, tokenRequest.Password);
-        
+
         return Ok(new TokenResponse { AccessToken = token });
     }
-    
+
     [HttpPost]
     [Route("register")]
     [AllowAnonymous]
-    public async Task<ActionResult<UserResponse>> Register([FromBody] CreateUserCommand createUserCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserResponse>> Register([FromBody] CreateUserCommand createUserCommand,
+        CancellationToken cancellationToken)
     {
         var user = await _mediator.Send(createUserCommand, cancellationToken);
-        
+
         return Ok(user);
     }
 }

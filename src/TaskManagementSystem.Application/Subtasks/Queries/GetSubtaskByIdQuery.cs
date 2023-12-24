@@ -31,12 +31,12 @@ public class GetSubtaskByIdQueryHandler : IRequestHandler<GetSubtaskByIdQuery, S
         {
             return null;
         }
-        
+
         if (!_currentUserService.IsAdmin && subtask.Task.UserId != _currentUserService.UserId)
         {
             return null;
         }
-        
+
         return _mapper.Map<SubtaskResponse>(subtask);
     }
 }

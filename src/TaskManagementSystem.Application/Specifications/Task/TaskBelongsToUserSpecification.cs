@@ -17,7 +17,7 @@ public class TaskBelongsToUserSpecification : ISpecification<TaskEntity>
     {
         return entity.UserId == _userId;
     }
-    
+
     public Expression<Func<TaskEntity, bool>> GetExpression()
     {
         return task => task.UserId == _userId;

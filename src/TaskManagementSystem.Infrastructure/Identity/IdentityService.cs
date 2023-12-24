@@ -38,7 +38,7 @@ public class IdentityService : IIdentityService
         {
             throw new IdentityException(string.Join(";", createResult.Errors.Select(x => x.Description)));
         }
-        
+
         var addToRoleResult = await _userManager.AddToRoleAsync(account, IdentityRoleNames.User);
         if (!addToRoleResult.Succeeded)
         {
@@ -54,7 +54,7 @@ public class IdentityService : IIdentityService
         {
             throw new NotFoundException($"User with email {email} has not been found");
         }
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_jwtSettings.SecretKey);
 
@@ -64,7 +64,8 @@ public class IdentityService : IIdentityService
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(IdentityClaims.UserIdClaim, user.UserId.ToString()),
-            new Claim(IdentityClaims.IsAdminClaim, (await _userManager.IsInRoleAsync(user, IdentityRoleNames.Admin)).ToString())
+            new Claim(IdentityClaims.IsAdminClaim,
+                (await _userManager.IsInRoleAsync(user, IdentityRoleNames.Admin)).ToString())
         };
 
         foreach (var role in await _userManager.GetRolesAsync(user))

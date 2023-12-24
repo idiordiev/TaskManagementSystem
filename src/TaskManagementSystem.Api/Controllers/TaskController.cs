@@ -29,7 +29,7 @@ public class TaskController : ControllerBase
 
         return Ok(tasks);
     }
-    
+
     [HttpGet("{taskId:int}")]
     public async Task<ActionResult<TaskResponse>> GetById(int taskId, CancellationToken cancellationToken)
     {
@@ -40,10 +40,10 @@ public class TaskController : ControllerBase
         {
             return NotFound();
         }
-        
+
         return Ok(task);
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<TaskResponse>> Create(int userId, [FromBody] CreateTaskCommand createTaskCommand,
         CancellationToken cancellationToken)
@@ -53,7 +53,7 @@ public class TaskController : ControllerBase
 
         return Created(nameof(GetById), task);
     }
-    
+
     [HttpPut("{taskId:int}")]
     public async Task<ActionResult<TaskResponse>> Update(int taskId, [FromBody] UpdateTaskCommand updateTaskCommand,
         CancellationToken cancellationToken)
@@ -63,7 +63,7 @@ public class TaskController : ControllerBase
 
         return Ok(task);
     }
-    
+
     [HttpDelete("{taskId:int}")]
     public async Task<ActionResult> Delete(int taskId, CancellationToken cancellationToken)
     {

@@ -10,7 +10,7 @@ namespace TaskManagementSystem.Application.Users.Commands;
 public class UpdateUserCommand : IRequest<UserResponse>
 {
     public int Id { get; set; }
-    
+
     [Required]
     public string Name { get; set; }
 }

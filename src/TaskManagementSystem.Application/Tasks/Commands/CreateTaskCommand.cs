@@ -13,14 +13,14 @@ namespace TaskManagementSystem.Application.Tasks.Commands;
 public class CreateTaskCommand : IRequest<TaskResponse>
 {
     public int UserId { get; set; }
-    
+
     [Required]
     public string Name { get; set; }
-    
+
     public DateTime? DeadLine { get; set; }
-    
+
     public IEnumerable<CreateSubtaskCommand>? Subtasks { get; set; }
-    
+
     [Required]
     public string Category { get; set; }
 }
@@ -44,7 +44,7 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskR
         {
             throw new ForbiddenException();
         }
-        
+
         var user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null || user.State == UserState.Deleted)

@@ -12,7 +12,7 @@ namespace TaskManagementSystem.Application.Subtasks.Commands;
 public class CreateSubtaskCommand : IRequest<SubtaskResponse>
 {
     public int TaskId { get; set; }
-    
+
     [Required]
     public string Name { get; set; }
 }
@@ -33,12 +33,12 @@ public class CreateSubtaskCommandHandler : IRequestHandler<CreateSubtaskCommand,
     public async Task<SubtaskResponse> Handle(CreateSubtaskCommand request, CancellationToken cancellationToken)
     {
         var task = await _unitOfWork.TaskRepository.GetByIdAsync(request.TaskId, cancellationToken);
-        
+
         if (task is null)
         {
             throw new NotFoundException("Task", request.TaskId);
         }
-        
+
         if (!_currentUserService.IsAdmin && task.UserId != _currentUserService.UserId)
         {
             throw new NotFoundException("Task", request.TaskId);

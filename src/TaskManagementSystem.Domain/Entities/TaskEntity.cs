@@ -9,9 +9,9 @@ public class TaskEntity : Entity
     public TaskState State { get; set; } = TaskState.Pending;
     public DateTime? DeadLine { get; set; }
     public string Category { get; set; }
-    
+
     public ICollection<SubtaskEntity> Subtasks { get; set; } = [];
-    
+
     public int UserId { get; set; }
     public UserEntity User { get; set; }
 }

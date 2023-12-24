@@ -29,17 +29,18 @@ public class GetTasksByUserIdQueryHandler : IRequestHandler<GetTasksByUserIdQuer
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<TaskResponse>> Handle(GetTasksByUserIdQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TaskResponse>> Handle(GetTasksByUserIdQuery request,
+        CancellationToken cancellationToken)
     {
         if (!_currentUserService.IsAdmin && request.UserId != _currentUserService.UserId)
         {
             throw new ForbiddenException();
         }
-        
+
         var specs = new List<ISpecification<TaskEntity>>();
 
         specs.Add(new TaskBelongsToUserSpecification(_currentUserService.UserId));
-        
+
         if (request.Filters.Categories.Length != 0)
         {
             specs.Add(new TaskMatchesCategorySpecification(request.Filters.Categories));

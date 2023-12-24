@@ -11,12 +11,12 @@ namespace TaskManagementSystem.Application.Tasks.Commands;
 public class UpdateTaskCommand : IRequest<TaskResponse>
 {
     public int TaskId { get; set; }
-    
+
     [Required]
     public string Name { get; set; }
-    
+
     public TaskState State { get; set; } = TaskState.Pending;
-    
+
     public DateTime? DeadLine { get; set; }
 }
 
@@ -25,7 +25,7 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, TaskR
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
-    
+
     public UpdateTaskCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
@@ -41,7 +41,7 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, TaskR
         {
             throw new NotFoundException("Task", request.TaskId);
         }
-        
+
         if (!_currentUserService.IsAdmin && task.UserId != _currentUserService.UserId)
         {
             throw new ForbiddenException();

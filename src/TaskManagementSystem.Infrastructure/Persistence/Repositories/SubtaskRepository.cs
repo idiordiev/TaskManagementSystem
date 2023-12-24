@@ -10,8 +10,9 @@ public class SubtaskRepository : Repository<SubtaskEntity>, ISubtaskRepository
     public SubtaskRepository(DataContext context) : base(context)
     {
     }
-    
-    public new async Task<IEnumerable<SubtaskEntity>> GetAsync(Expression<Func<SubtaskEntity, bool>>? predicate = null, CancellationToken cancellationToken = default)
+
+    public new async Task<IEnumerable<SubtaskEntity>> GetAsync(Expression<Func<SubtaskEntity, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
     {
         var dbSet = Context.Subtasks
             .Include(x => x.Task);
@@ -23,7 +24,7 @@ public class SubtaskRepository : Repository<SubtaskEntity>, ISubtaskRepository
 
         return await dbSet.Where(predicate).ToListAsync(cancellationToken);
     }
-    
+
     public new async Task<SubtaskEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await Context.Subtasks

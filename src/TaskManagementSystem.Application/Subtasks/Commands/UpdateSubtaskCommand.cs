@@ -11,7 +11,7 @@ namespace TaskManagementSystem.Application.Subtasks.Commands;
 public class UpdateSubtaskCommand : IRequest<SubtaskResponse>
 {
     public int SubtaskId { get; set; }
-    
+
     [Required]
     public string Name { get; set; }
 
@@ -39,7 +39,7 @@ public class UpdateSubtaskCommandHandler : IRequestHandler<UpdateSubtaskCommand,
         {
             throw new NotFoundException("Subtask", request.SubtaskId);
         }
-        
+
         if (!_currentUserService.IsAdmin && subtask.Task.UserId != _currentUserService.UserId)
         {
             throw new NotFoundException("Subtask", request.SubtaskId);
@@ -47,7 +47,7 @@ public class UpdateSubtaskCommandHandler : IRequestHandler<UpdateSubtaskCommand,
 
         subtask.Name = request.Name;
         subtask.State = request.State;
-        
+
         _unitOfWork.SubtaskRepository.Update(subtask);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
