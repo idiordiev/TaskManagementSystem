@@ -16,10 +16,10 @@ public class NotificationControllerTests : IClassFixture<ApplicationFactory>
     {
         _client = applicationFactory.CreateClient();
         
-        OneTimeSetUp();
+        SetUp();
     }
     
-    public void OneTimeSetUp()
+    public void SetUp()
     {
         var adminTokenRequest = new TokenRequest
         {

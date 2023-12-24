@@ -20,10 +20,10 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
     {
         _client = applicationFactory.CreateClient();
         
-        OneTimeSetUp();
+        SetUp();
     }
     
-    public void OneTimeSetUp()
+    public void SetUp()
     {
         var newUserContract = new CreateUserContract
         {
