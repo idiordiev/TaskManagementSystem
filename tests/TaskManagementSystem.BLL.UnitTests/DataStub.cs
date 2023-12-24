@@ -98,7 +98,16 @@ public static class DataStub
             Id = 1,
             Name = "Subtask one of Task two",
             State = TaskState.Pending,
-            TaskId = 2
+            TaskId = 2,
+            Task = new TaskEntity
+            {
+                Id = 2,
+                Name = "Task two",
+                DeadLine = new DateTime(2023, 12, 24, 23, 59, 59),
+                Category = "cat1",
+                State = TaskState.InProgress,
+                UserId = 1
+            }
         },
 
         new SubtaskEntity
@@ -106,7 +115,16 @@ public static class DataStub
             Id = 2,
             Name = "Subtask two of Task two",
             State = TaskState.Done,
-            TaskId = 2
+            TaskId = 2,
+            Task = new TaskEntity
+            {
+                Id = 2,
+                Name = "Task two",
+                DeadLine = new DateTime(2023, 12, 24, 23, 59, 59),
+                Category = "cat1",
+                State = TaskState.InProgress,
+                UserId = 1
+            }
         },
 
         new SubtaskEntity
@@ -114,7 +132,16 @@ public static class DataStub
             Id = 3,
             Name = "Subtask one of Task three",
             State = TaskState.Pending,
-            TaskId = 3
+            TaskId = 3,
+            Task = new TaskEntity
+            {
+                Id = 3,
+                Name = "Task three",
+                DeadLine = new DateTime(2023, 12, 27, 23, 59, 59),
+                Category = "cat2",
+                State = TaskState.Pending,
+                UserId = 1
+            }
         }
     ];
 }

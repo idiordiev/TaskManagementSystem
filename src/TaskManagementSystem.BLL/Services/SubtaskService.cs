@@ -4,6 +4,7 @@ using TaskManagementSystem.BLL.Contracts.Responses;
 using TaskManagementSystem.BLL.Exceptions;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.DAL.Entities;
+using TaskManagementSystem.DAL.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services;
@@ -71,7 +72,7 @@ public class SubtaskService : ISubtaskService
         
         if (!_currentUserService.IsAdmin && subtask.Task.UserId != _currentUserService.UserId)
         {
-            return subtask;
+            return null;
         }
 
         return subtask;
@@ -87,12 +88,14 @@ public class SubtaskService : ISubtaskService
             throw new NotFoundException("Task", taskId);
         }
 
-        var newSubtask = new SubtaskEntity()
+        var newSubtask = new SubtaskEntity
         {
-            Name = createSubtaskContract.Name
+            Name = createSubtaskContract.Name,
+            State = TaskState.Pending,
+            Task = task
         };
-        
-        task.Subtasks.Add(newSubtask);
+
+        await _unitOfWork.SubtaskRepository.AddAsync(newSubtask, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<SubtaskResponse>(newSubtask);
@@ -109,12 +112,13 @@ public class SubtaskService : ISubtaskService
         }
         
         _mapper.Map(updateSubtaskContract, subtask);
+        _unitOfWork.SubtaskRepository.Update(subtask);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<SubtaskResponse>(subtask);
     }
 
-    public async Task RemoveAsync(int subtaskId, CancellationToken cancellationToken)
+    public async Task DeleteAsync(int subtaskId, CancellationToken cancellationToken = default)
     {
         var subtask =  await GetSubtaskByIdAsync(subtaskId, cancellationToken);
         

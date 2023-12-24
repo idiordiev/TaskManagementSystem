@@ -60,10 +60,8 @@ public class TaskServiceTests
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var mockCurrentUserService = new Mock<ICurrentUserService>();
-        
-        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
-        
+
+        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()));
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
@@ -201,10 +199,8 @@ public class TaskServiceTests
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var mockCurrentUserService = new Mock<ICurrentUserService>();
-        
-        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
-        
+
+        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()));
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
@@ -223,12 +219,9 @@ public class TaskServiceTests
         // Arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var mockCurrentUserService = new Mock<ICurrentUserService>();
-        
-        mockUnitOfWork.Setup(x => x.UserRepository.GetAsync(It.IsAny<Expression<Func<UserEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<UserEntity, bool>> predicate, CancellationToken _) => DataStub.Users.Where(predicate.Compile()).ToList());
-        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
-        
+
+        mockUnitOfWork.Setup(x => x.UserRepository.GetAsync(It.IsAny<Expression<Func<UserEntity, bool>>>(), It.IsAny<CancellationToken>()));
+        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()));
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(2);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
@@ -250,9 +243,7 @@ public class TaskServiceTests
         
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
-        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
-
+        mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()));
         mockUnitOfWork.Setup(x => x.TaskRepository.AddAsync(It.IsAny<TaskEntity>(), It.IsAny<CancellationToken>()));
         mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         
