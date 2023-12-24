@@ -13,7 +13,7 @@ using TaskManagementSystem.Application.Tasks.Queries;
 using TaskManagementSystem.Domain.Entities;
 using TaskManagementSystem.Domain.Enums;
 
-namespace TaskManagementSystem.Application.UnitTests.Services;
+namespace TaskManagementSystem.Application.UnitTests.Requests;
 
 [TestFixture]
 public class TaskServiceTests

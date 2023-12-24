@@ -7,7 +7,7 @@ using TaskManagementSystem.Application.Interfaces;
 using TaskManagementSystem.Application.Notifications.Queries;
 using TaskManagementSystem.Domain.Entities;
 
-namespace TaskManagementSystem.Application.UnitTests.Services;
+namespace TaskManagementSystem.Application.UnitTests.Requests;
 
 [TestFixture]
 public class NotificationTests
