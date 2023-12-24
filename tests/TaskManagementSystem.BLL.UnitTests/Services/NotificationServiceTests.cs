@@ -36,6 +36,9 @@ public class NotificationServiceTests
         // Assert
         notifications.Should().NotBeEmpty();
         notifications.Should().Contain(x => x.TaskId == 2);
+        notifications.Should().Contain(x => x.ExpiresIn != default);
+        notifications.Should().Contain(x => x.UserId == 1);
+        notifications.Should().Contain(x => !string.IsNullOrEmpty(x.Message));
     }
     
     [Test]
