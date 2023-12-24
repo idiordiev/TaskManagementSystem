@@ -88,6 +88,7 @@ public class UserService : IUserService
         }
 
         _mapper.Map(updateUserContract, user);
+        _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserResponse>(user);
@@ -105,6 +106,7 @@ public class UserService : IUserService
         await _identityService.DeleteAccountsForUserAsync(user.Id, cancellationToken);
         
         user.State = UserState.Deleted;
+        _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.BLL.Contracts;
 using TaskManagementSystem.BLL.Contracts.Responses;
+using TaskManagementSystem.BLL.Exceptions;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.DAL.Entities;
 
@@ -43,9 +44,16 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserEntity>> Create([FromBody] CreateUserContract createUserContract, CancellationToken cancellationToken)
     {
-        var user = await _userService.CreateAsync(createUserContract, cancellationToken);
+        try
+        {
+            var user = await _userService.CreateAsync(createUserContract, cancellationToken);
 
-        return Created(nameof(GetById), user);
+            return Created(nameof(GetById), user);
+        }
+        catch (UserExistsException ex)
+        {
+            return BadRequest($"User with such email {createUserContract.Email} already exists");
+        }
     }
 
     [HttpPut("{id:int}")]

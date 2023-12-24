@@ -8,6 +8,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagementSystem.BLL", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagementSystem.Api", "src\TaskManagementSystem.Api\TaskManagementSystem.Api.csproj", "{8B4DBCE5-3044-4BEF-AC48-1F69AA1731A4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C9EE03B4-D5CE-44BD-B2CD-370A1F81FEAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagementSystem.BLL.UnitTests", "tests\TaskManagementSystem.BLL.UnitTests\TaskManagementSystem.BLL.UnitTests.csproj", "{055DF433-231A-4E58-B951-15FC851FE0C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagementSystem.DAL.UnitTests", "tests\TaskManagementSystem.DAL.UnitTests\TaskManagementSystem.DAL.UnitTests.csproj", "{A8987446-7CFA-4637-834F-D2CFBB4F18BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagementSystem.Api.IntegrationTests", "tests\TaskManagementSystem.Api.IntegrationTests\TaskManagementSystem.Api.IntegrationTests.csproj", "{FB77E16E-AAD3-4FB5-BB1C-1622A076AE6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,10 +34,25 @@ Global
 		{8B4DBCE5-3044-4BEF-AC48-1F69AA1731A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B4DBCE5-3044-4BEF-AC48-1F69AA1731A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B4DBCE5-3044-4BEF-AC48-1F69AA1731A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{055DF433-231A-4E58-B951-15FC851FE0C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{055DF433-231A-4E58-B951-15FC851FE0C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{055DF433-231A-4E58-B951-15FC851FE0C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{055DF433-231A-4E58-B951-15FC851FE0C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8987446-7CFA-4637-834F-D2CFBB4F18BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8987446-7CFA-4637-834F-D2CFBB4F18BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8987446-7CFA-4637-834F-D2CFBB4F18BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8987446-7CFA-4637-834F-D2CFBB4F18BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB77E16E-AAD3-4FB5-BB1C-1622A076AE6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB77E16E-AAD3-4FB5-BB1C-1622A076AE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB77E16E-AAD3-4FB5-BB1C-1622A076AE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB77E16E-AAD3-4FB5-BB1C-1622A076AE6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E2C64A88-FD86-40C7-BB92-C47FADD6FDDB} = {777E71DD-6217-47A8-9028-4E6EA864CBD1}
 		{903E696A-74E6-4302-99B1-DABFBB47396A} = {777E71DD-6217-47A8-9028-4E6EA864CBD1}
 		{8B4DBCE5-3044-4BEF-AC48-1F69AA1731A4} = {777E71DD-6217-47A8-9028-4E6EA864CBD1}
+		{055DF433-231A-4E58-B951-15FC851FE0C8} = {C9EE03B4-D5CE-44BD-B2CD-370A1F81FEAF}
+		{A8987446-7CFA-4637-834F-D2CFBB4F18BF} = {C9EE03B4-D5CE-44BD-B2CD-370A1F81FEAF}
+		{FB77E16E-AAD3-4FB5-BB1C-1622A076AE6B} = {C9EE03B4-D5CE-44BD-B2CD-370A1F81FEAF}
 	EndGlobalSection
 EndGlobal

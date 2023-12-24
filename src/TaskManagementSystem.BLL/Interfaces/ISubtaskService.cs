@@ -9,5 +9,5 @@ public interface ISubtaskService
     Task<SubtaskResponse?> GetByIdAsync(int subtaskId, CancellationToken cancellationToken = default);
     Task<SubtaskResponse> AddToTaskAsync(int taskId, CreateSubtaskContract createSubtaskContract, CancellationToken cancellationToken = default);
     Task<SubtaskResponse> UpdateAsync(int subtaskId, UpdateSubtaskContract updateSubtaskContract, CancellationToken cancellationToken = default);
-    Task RemoveAsync(int subtaskId, CancellationToken cancellationToken = default);
+    Task DeleteAsync(int subtaskId, CancellationToken cancellationToken = default);
 }

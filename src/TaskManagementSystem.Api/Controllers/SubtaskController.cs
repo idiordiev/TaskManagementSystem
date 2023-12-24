@@ -60,7 +60,7 @@ public class SubtaskController : ControllerBase
     [HttpDelete("{subtaskId:int}")]
     public async Task<ActionResult<IEnumerable<Task>>> Delete(int subtaskId, CancellationToken cancellationToken)
     {
-        await _subtaskService.RemoveAsync(subtaskId, cancellationToken);
+        await _subtaskService.DeleteAsync(subtaskId, cancellationToken);
 
         return Ok();
     }

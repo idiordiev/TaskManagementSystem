@@ -101,3 +101,5 @@ async Task EnsureIdentityCreated(IServiceProvider serviceProvider)
     var identityService = serviceProvider.GetRequiredService<IIdentityService>();
     await identityService.TryGrantAdminRightsAsync(user.Id);
 }
+
+public partial class Program;
