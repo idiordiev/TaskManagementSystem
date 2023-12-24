@@ -1,4 +1,4 @@
-﻿using TaskManagementSystem.BLL.Contracts;
+﻿using TaskManagementSystem.Application.Contracts;
 
 namespace TaskManagementSystem.Api.IntegrationTests.Controllers.Fixtures;
 

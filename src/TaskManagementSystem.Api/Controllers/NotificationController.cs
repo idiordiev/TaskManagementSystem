@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.BLL.Models;
+using TaskManagementSystem.Application.Interfaces;
+using TaskManagementSystem.Application.Models;
 
 namespace TaskManagementSystem.Api.Controllers;
 

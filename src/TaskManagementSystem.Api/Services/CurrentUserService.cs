@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using TaskManagementSystem.Api.Identity;
-using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.Application.Interfaces;
+using TaskManagementSystem.Infrastructure.Identity;
 
 namespace TaskManagementSystem.Api.Services;
 

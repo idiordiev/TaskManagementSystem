@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using TaskManagementSystem.Api.Identity;
 using TaskManagementSystem.DAL;
+using TaskManagementSystem.Infrastructure.Identity;
+using TaskManagementSystem.Infrastructure.Persistence;
 
 namespace TaskManagementSystem.Api.IntegrationTests;
 

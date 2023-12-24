@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
-using TaskManagementSystem.Api.Identity;
+using TaskManagementSystem.Infrastructure.Identity;
 using Xunit;
 
 namespace TaskManagementSystem.Api.IntegrationTests.Controllers;

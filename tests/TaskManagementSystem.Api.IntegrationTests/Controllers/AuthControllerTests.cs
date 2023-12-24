@@ -2,9 +2,9 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using FluentAssertions;
-using TaskManagementSystem.Api.Identity;
-using TaskManagementSystem.BLL.Contracts;
-using TaskManagementSystem.BLL.Contracts.Responses;
+using TaskManagementSystem.Application.Contracts;
+using TaskManagementSystem.Application.Contracts.Responses;
+using TaskManagementSystem.Infrastructure.Identity;
 using Xunit;
 
 namespace TaskManagementSystem.Api.IntegrationTests.Controllers;

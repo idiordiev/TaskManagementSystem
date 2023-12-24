@@ -2,22 +2,19 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using TaskManagementSystem.Api.Extensions;
-using TaskManagementSystem.Api.Identity;
 using TaskManagementSystem.Api.Middlewares;
 using TaskManagementSystem.Api.Services;
-using TaskManagementSystem.BLL.Contracts;
-using TaskManagementSystem.BLL.Extensions;
-using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.DAL.Extensions;
+using TaskManagementSystem.Application.Contracts;
+using TaskManagementSystem.Application.Extensions;
+using TaskManagementSystem.Application.Interfaces;
+using TaskManagementSystem.Infrastructure.Extensions;
+using TaskManagementSystem.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddDataLayer(configuration);
-builder.Services.AddBusinessLogic();
-
-builder.Services.ConfigureIdentity(configuration);
+builder.Services.AddInfrastructure(configuration);
+builder.Services.AddApplication();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -102,4 +99,7 @@ async Task EnsureIdentityCreated(IServiceProvider serviceProvider)
     await identityService.TryGrantAdminRightsAsync(user.Id);
 }
 
-public partial class Program;
+namespace TaskManagementSystem.Api
+{
+    public partial class Program;
+}
