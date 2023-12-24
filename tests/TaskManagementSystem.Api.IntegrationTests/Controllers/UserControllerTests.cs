@@ -50,7 +50,6 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         };
         var userResponse =  _client.PostAsJsonAsync("/api/auth/login", userTokenRequest).GetAwaiter().GetResult();
         _regularUserToken = userResponse.Content.ReadFromJsonAsync<TokenResponse>().GetAwaiter().GetResult()!.AccessToken;
-
     }
     
     [Fact]
