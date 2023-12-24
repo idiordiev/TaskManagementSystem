@@ -3,7 +3,7 @@ using TaskManagementSystem.DAL.Enums;
 
 namespace TaskManagementSystem.BLL.UnitTests;
 
-public static class DataStub
+public static class UnitTestHelper
 {
     public static List<UserEntity> Users =>
     [

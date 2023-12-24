@@ -38,7 +38,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetAsync(It.IsAny<Expression<Func<UserEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<UserEntity, bool>> predicate, CancellationToken _) => DataStub.Users.Where(predicate.Compile()).ToList());
+            .ReturnsAsync((Expression<Func<UserEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Users.Where(predicate.Compile()).ToList());
         
         var service = new UserService(mockUnitOfWork.Object, mockIdentityService.Object, _mapper);
 
@@ -58,7 +58,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Id == id));
         
         var service = new UserService(mockUnitOfWork.Object, mockIdentityService.Object, _mapper);
 
@@ -81,7 +81,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Id == id));
         
         var service = new UserService(mockUnitOfWork.Object, mockIdentityService.Object, _mapper);
 
@@ -100,7 +100,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string email, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Email == email));
+            .ReturnsAsync((string email, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Email == email));
         
         var service = new UserService(mockUnitOfWork.Object, mockIdentityService.Object, _mapper);
 
@@ -123,7 +123,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string email, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Email == email));
+            .ReturnsAsync((string email, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Email == email));
         
         var service = new UserService(mockUnitOfWork.Object, mockIdentityService.Object, _mapper);
 
@@ -225,7 +225,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Id == id));
         mockUnitOfWork.Setup(x => x.UserRepository.Update(It.IsAny<UserEntity>()));
         mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         
@@ -258,7 +258,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Id == id));
         
         var service = new UserService(mockUnitOfWork.Object, mockIdentityService.Object, _mapper);
         
@@ -282,7 +282,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Id == id));
         mockUnitOfWork.Setup(x => x.UserRepository.Update(It.IsAny<UserEntity>()));
         mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
 
@@ -308,7 +308,7 @@ public class UserServiceTests
         var mockIdentityService = new Mock<IIdentityService>();
 
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Id == id));
         
         var service = new UserService(mockUnitOfWork.Object, mockIdentityService.Object, _mapper);
         

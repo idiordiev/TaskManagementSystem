@@ -39,7 +39,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
+            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Tasks.Where(predicate.Compile()).ToList());
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -82,7 +82,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
+            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Tasks.Where(predicate.Compile()).ToList());
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -105,7 +105,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
+            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Tasks.Where(predicate.Compile()).ToList());
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -128,7 +128,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -157,7 +157,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -179,7 +179,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -242,7 +242,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Users.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Users.FirstOrDefault(x => x.Id == id));
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()));
         mockUnitOfWork.Setup(x => x.TaskRepository.AddAsync(It.IsAny<TaskEntity>(), It.IsAny<CancellationToken>()));
         mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
@@ -300,7 +300,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         mockUnitOfWork.Setup(x => x.TaskRepository.Update(It.IsAny<TaskEntity>()));
         mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         
@@ -345,7 +345,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -367,7 +367,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -389,7 +389,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         mockUnitOfWork.Setup(x => x.TaskRepository.Delete(It.IsAny<TaskEntity>()));
         mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         
@@ -414,7 +414,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
@@ -436,7 +436,7 @@ public class TaskServiceTests
         var mockCurrentUserService = new Mock<ICurrentUserService>();
         
         mockUnitOfWork.Setup(x => x.TaskRepository.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((int id, CancellationToken _) => DataStub.Tasks.FirstOrDefault(x => x.Id == id));
+            .ReturnsAsync((int id, CancellationToken _) => UnitTestHelper.Tasks.FirstOrDefault(x => x.Id == id));
         
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);

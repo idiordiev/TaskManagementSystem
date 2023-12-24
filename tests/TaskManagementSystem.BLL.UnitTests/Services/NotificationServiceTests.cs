@@ -23,7 +23,7 @@ public class NotificationServiceTests
 
         mockTimeProvider.Setup(x => x.GetUtcNow()).Returns(new DateTimeOffset(2023, 12, 24, 21, 39, 38, TimeSpan.Zero));
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
+            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Tasks.Where(predicate.Compile()).ToList());
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
@@ -51,7 +51,7 @@ public class NotificationServiceTests
 
         mockTimeProvider.Setup(x => x.GetUtcNow()).Returns(new DateTimeOffset(2023, 12, 14, 21, 39, 38, TimeSpan.Zero));
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
+            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Tasks.Where(predicate.Compile()).ToList());
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
@@ -75,7 +75,7 @@ public class NotificationServiceTests
 
         mockTimeProvider.Setup(x => x.GetUtcNow()).Returns(new DateTimeOffset(2023, 12, 30, 21, 39, 38, TimeSpan.Zero));
         mockUnitOfWork.Setup(x => x.TaskRepository.GetAsync(It.IsAny<Expression<Func<TaskEntity, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => DataStub.Tasks.Where(predicate.Compile()).ToList());
+            .ReturnsAsync((Expression<Func<TaskEntity, bool>> predicate, CancellationToken _) => UnitTestHelper.Tasks.Where(predicate.Compile()).ToList());
         mockCurrentUserService.SetupGet(x => x.UserId).Returns(1);
         mockCurrentUserService.SetupGet(x => x.IsAdmin).Returns(false);
         
