@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.BLL.Contracts;
-using TaskManagementSystem.BLL.Contracts.Responses;
-using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.BLL.Models;
+using TaskManagementSystem.Application.Tasks.Commands;
+using TaskManagementSystem.Application.Tasks.Models;
+using TaskManagementSystem.Application.Tasks.Queries;
 
 namespace TaskManagementSystem.Api.Controllers;
 
@@ -12,57 +12,62 @@ namespace TaskManagementSystem.Api.Controllers;
 [Authorize]
 public class TaskController : ControllerBase
 {
-    private readonly ITaskService _taskService;
+    private readonly IMediator _mediator;
 
-    public TaskController(ITaskService taskService)
+    public TaskController(IMediator mediator)
     {
-        _taskService = taskService;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskResponse>>> GetAll(int userId, [FromQuery] TaskFiltersModel filters,
         CancellationToken cancellationToken)
     {
-        var tasks = await _taskService.GetTasksByUserIdAsync(userId, filters, cancellationToken);
+        var query = new GetTasksByUserIdQuery { UserId = userId, Filters = filters };
+        var tasks = await _mediator.Send(query, cancellationToken);
 
         return Ok(tasks);
     }
-    
+
     [HttpGet("{taskId:int}")]
     public async Task<ActionResult<TaskResponse>> GetById(int taskId, CancellationToken cancellationToken)
     {
-        var task = await _taskService.GetByIdAsync(taskId, cancellationToken);
+        var query = new GetTaskByIdQuery { TaskId = taskId };
+        var task = await _mediator.Send(query, cancellationToken);
 
         if (task is null)
         {
             return NotFound();
         }
-        
+
         return Ok(task);
     }
-    
+
     [HttpPost]
-    public async Task<ActionResult<TaskResponse>> Create(int userId, [FromBody] CreateTaskContract createTaskContract,
+    public async Task<ActionResult<TaskResponse>> Create(int userId, [FromBody] CreateTaskCommand createTaskCommand,
         CancellationToken cancellationToken)
     {
-        var task = await _taskService.AddAsync(userId, createTaskContract, cancellationToken);
+        createTaskCommand.UserId = userId;
+        var task = await _mediator.Send(createTaskCommand, cancellationToken);
 
         return Created(nameof(GetById), task);
     }
-    
+
     [HttpPut("{taskId:int}")]
-    public async Task<ActionResult<TaskResponse>> Update(int taskId, [FromBody] UpdateTaskContract updateTaskContract,
+    public async Task<ActionResult<TaskResponse>> Update(int taskId, [FromBody] UpdateTaskCommand updateTaskCommand,
         CancellationToken cancellationToken)
     {
-        var task = await _taskService.UpdateAsync(taskId, updateTaskContract, cancellationToken);
+        updateTaskCommand.TaskId = taskId;
+        var task = await _mediator.Send(updateTaskCommand, cancellationToken);
 
         return Ok(task);
     }
-    
+
     [HttpDelete("{taskId:int}")]
     public async Task<ActionResult> Delete(int taskId, CancellationToken cancellationToken)
     {
-        await _taskService.DeleteByIdAsync(taskId, cancellationToken);
+        var command = new DeleteTaskCommand { TaskId = taskId };
+        await _mediator.Send(command, cancellationToken);
 
         return Ok();
     }

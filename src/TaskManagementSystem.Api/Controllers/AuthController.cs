@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.Api.Identity;
-using TaskManagementSystem.BLL.Contracts;
-using TaskManagementSystem.BLL.Contracts.Responses;
-using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.Application.Interfaces;
+using TaskManagementSystem.Application.Users.Commands;
+using TaskManagementSystem.Application.Users.Models;
+using TaskManagementSystem.Infrastructure.Identity;
 
 namespace TaskManagementSystem.Api.Controllers;
 
@@ -13,31 +14,32 @@ namespace TaskManagementSystem.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IIdentityService _identityService;
-    private readonly IUserService _userService;
-    
-    public AuthController(IIdentityService identityService, IUserService userService)
+    private readonly IMediator _mediator;
+
+    public AuthController(IIdentityService identityService, IMediator mediator)
     {
         _identityService = identityService;
-        _userService = userService;
+        _mediator = mediator;
     }
-    
+
     [HttpPost]
     [Route("login")]
     [AllowAnonymous]
     public async Task<ActionResult<TokenResponse>> GetToken([FromBody] TokenRequest tokenRequest)
     {
         var token = await _identityService.GetTokenAsync(tokenRequest.Email, tokenRequest.Password);
-        
+
         return Ok(new TokenResponse { AccessToken = token });
     }
-    
+
     [HttpPost]
     [Route("register")]
     [AllowAnonymous]
-    public async Task<ActionResult<UserResponse>> Register([FromBody] CreateUserContract createUserContract, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserResponse>> Register([FromBody] CreateUserCommand createUserCommand,
+        CancellationToken cancellationToken)
     {
-        var user = await _userService.CreateAsync(createUserContract, cancellationToken);
-        
+        var user = await _mediator.Send(createUserCommand, cancellationToken);
+
         return Ok(user);
     }
 }

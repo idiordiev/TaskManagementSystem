@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
-using TaskManagementSystem.BLL.Exceptions;
+using TaskManagementSystem.Application.Exceptions;
 
 namespace TaskManagementSystem.Api.Middlewares;
 
