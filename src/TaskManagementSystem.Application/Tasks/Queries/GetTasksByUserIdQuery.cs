@@ -3,7 +3,6 @@ using AutoMapper;
 using MediatR;
 using TaskManagementSystem.Application.Exceptions;
 using TaskManagementSystem.Application.Interfaces;
-using TaskManagementSystem.Application.Models;
 using TaskManagementSystem.Application.Tasks.Models;
 using TaskManagementSystem.Application.Utility;
 using TaskManagementSystem.Domain.Entities;

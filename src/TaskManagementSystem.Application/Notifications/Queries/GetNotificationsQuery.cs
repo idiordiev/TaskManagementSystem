@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using TaskManagementSystem.Application.Exceptions;
 using TaskManagementSystem.Application.Interfaces;
-using TaskManagementSystem.Application.Models;
 using TaskManagementSystem.Application.Notifications.Models;
 
 namespace TaskManagementSystem.Application.Notifications.Queries;

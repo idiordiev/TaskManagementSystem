@@ -1,6 +1,6 @@
 ﻿using TaskManagementSystem.Domain.Enums;
 
-namespace TaskManagementSystem.Application.Models;
+namespace TaskManagementSystem.Application.Tasks.Models;
 
 public class TaskFiltersModel
 {

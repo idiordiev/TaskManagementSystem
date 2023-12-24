@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.Application.Models;
 using TaskManagementSystem.Application.Tasks.Commands;
 using TaskManagementSystem.Application.Tasks.Models;
 using TaskManagementSystem.Application.Tasks.Queries;
