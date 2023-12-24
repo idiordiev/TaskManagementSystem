@@ -10,24 +10,21 @@ namespace TaskManagementSystem.Api.IntegrationTests.Controllers;
 public class NotificationControllerTests : IClassFixture<ApplicationFactory>
 {
     private HttpClient _client;
-    private string _jwtToken;
     
     public NotificationControllerTests(ApplicationFactory applicationFactory)
     {
         _client = applicationFactory.CreateClient();
-        
-        SetUp();
     }
     
-    public void SetUp()
+    private async Task<string> GetTokenAsync()
     {
         var adminTokenRequest = new TokenRequest
         {
             Email = "admin@test.com",
             Password = "Adm1nPasswordd"
         };
-        var adminResponse = _client.PostAsJsonAsync("/api/auth/login", adminTokenRequest).GetAwaiter().GetResult();
-        _jwtToken = adminResponse.Content.ReadFromJsonAsync<TokenResponse>().GetAwaiter().GetResult()!.AccessToken;
+        var adminResponse = await _client.PostAsJsonAsync("/api/auth/login", adminTokenRequest);
+        return (await adminResponse.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
     }
     
     [Fact]
@@ -46,7 +43,7 @@ public class NotificationControllerTests : IClassFixture<ApplicationFactory>
     public async Task GetAll_WithToken_ReturnsListOfUsers()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
 
         // Act
         var response = await _client.GetAsync("/api/users/1/notifications");

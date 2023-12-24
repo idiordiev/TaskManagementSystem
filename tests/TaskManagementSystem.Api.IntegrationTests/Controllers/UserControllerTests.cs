@@ -3,56 +3,48 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using TaskManagementSystem.Api.Identity;
+using TaskManagementSystem.Api.IntegrationTests.Controllers.Fixtures;
 using TaskManagementSystem.BLL.Contracts;
 using TaskManagementSystem.BLL.Contracts.Responses;
 using Xunit;
 
 namespace TaskManagementSystem.Api.IntegrationTests.Controllers;
 
-public class UserControllerTests : IClassFixture<ApplicationFactory>
+[TestCaseOrderer("TaskManagementSystem.Api.IntegrationTests.PriorityOrderer", "TaskManagementSystem.Api.IntegrationTests")]
+public class UserControllerTests : IClassFixture<ApplicationFactory>, IClassFixture<UserControllerStateFixture>
 {
     private HttpClient _client;
-    private string _jwtToken;
-    private string _regularUserToken;
-    private int _userId;
+    private UserControllerStateFixture _state;
     
-    public UserControllerTests(ApplicationFactory applicationFactory)
+    public UserControllerTests(ApplicationFactory applicationFactory, UserControllerStateFixture state)
     {
+        _state = state;
         _client = applicationFactory.CreateClient();
-        
-        SetUp();
     }
     
-    public void SetUp()
+    private async Task<string> GetAdminTokenAsync()
     {
-        var newUserContract = new CreateUserContract
-        {
-            Name = Guid.NewGuid().ToString(),
-            Email = $"{Guid.NewGuid().ToString()}@mail.com",
-            Password = Guid.NewGuid().ToString()
-        };
-
-        var newUserResponse = _client.PostAsJsonAsync("/api/auth/register", newUserContract).GetAwaiter().GetResult();
-        _userId = newUserResponse.Content.ReadFromJsonAsync<UserResponse>().GetAwaiter().GetResult()!.Id;
-        
-        var adminTokenRequest = new TokenRequest
+        var tokenRequest = new TokenRequest
         {
             Email = "admin@test.com",
             Password = "Adm1nPasswordd"
         };
-        var adminResponse = _client.PostAsJsonAsync("/api/auth/login", adminTokenRequest).GetAwaiter().GetResult();
-        _jwtToken = adminResponse.Content.ReadFromJsonAsync<TokenResponse>().GetAwaiter().GetResult()!.AccessToken;
-        
-        var userTokenRequest = new TokenRequest
-        {
-            Email = newUserContract.Email,
-            Password = newUserContract.Password
-        };
-        var userResponse =  _client.PostAsJsonAsync("/api/auth/login", userTokenRequest).GetAwaiter().GetResult();
-        _regularUserToken = userResponse.Content.ReadFromJsonAsync<TokenResponse>().GetAwaiter().GetResult()!.AccessToken;
+        var response = await _client.PostAsJsonAsync("/api/auth/login", tokenRequest);
+        return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
     }
     
-    [Fact]
+    private async Task<string> GetUserTokenAsync()
+    {
+        var tokenRequest = new TokenRequest
+        {
+            Email = _state.CreateUserContract.Email,
+            Password = _state.CreateUserContract.Password
+        };
+        var response = await _client.PostAsJsonAsync("/api/auth/login", tokenRequest);
+        return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
+    }
+    
+    [Fact, TestPriority(2)]
     public async Task GetAll_NoToken_ReturnsUnauthorized()
     {
         // Arrange
@@ -64,11 +56,11 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
     
-    [Fact]
+    [Fact, TestPriority(2)]
     public async Task GetAll_UserToken_ReturnsForbidden()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _regularUserToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetUserTokenAsync());
 
         // Act
         var response = await _client.GetAsync("/api/users");
@@ -77,11 +69,11 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
     
-    [Fact]
+    [Fact, TestPriority(2)]
     public async Task GetAll_AdminToken_ReturnsListOfUsers()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
 
         // Act
         var response = await _client.GetAsync("/api/users");
@@ -92,11 +84,11 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         users.Should().NotBeEmpty();
     }
     
-    [Fact]
+    [Fact, TestPriority(3)]
     public async Task GetById_AdminId_ReturnsAdmin()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
 
         // Act
         var response = await _client.GetAsync("/api/users/1");
@@ -109,11 +101,11 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         user.Email.Should().Be("admin@test.com");
     }
     
-    [Fact]
+    [Fact, TestPriority(3)]
     public async Task GetById_NonExisting_ReturnsNotFound()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
 
         // Act
         var response = await _client.GetAsync("/api/users/100000124");
@@ -122,17 +114,12 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
     
-    [Fact]
+    [Fact, TestPriority(1)]
     public async Task Create_NewUser_ReturnsCreatedAndUserResponse()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
-        var createUserContract = new CreateUserContract
-        {
-            Name = "newusersfdkj",
-            Email = "userjahsfj@test.com",
-            Password = "somE43paas"
-        };
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
+        var createUserContract = _state.CreateUserContract;
         
         // Act
         var response = await _client.PostAsJsonAsync("/api/users", createUserContract);
@@ -144,13 +131,15 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         user.Id.Should().NotBe(0);
         user.Email.Should().Be(createUserContract.Email);
         user.Name.Should().Be(createUserContract.Name);
+
+        _state.UserId = user.Id;
     }
     
-    [Fact]
+    [Fact, TestPriority(1)]
     public async Task Create_ExistingUser_ReturnsBadRequest()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
         var createUserContract = new CreateUserContract
         {
             Name = "admin",
@@ -165,11 +154,11 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
     
-    [Fact]
+    [Fact, TestPriority(4)]
     public async Task Update_ExistingUser_ReturnsOk()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
         var updateUserContract = new UpdateUserContract
         {
             Name = "admin new name"
@@ -187,11 +176,11 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         user.Name.Should().Be("admin new name");
     }
     
-    [Fact]
+    [Fact, TestPriority(4)]
     public async Task Update_NonExisting_ReturnsNotFound()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
         var updateUserContract = new UpdateUserContract
         {
             Name = "not existing user new name"
@@ -204,24 +193,24 @@ public class UserControllerTests : IClassFixture<ApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
     
-    [Fact]
+    [Fact, TestPriority(5)]
     public async Task Delete_ExistingUser_ReturnsOk()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
         
         // Act
-        var response = await _client.DeleteAsync($"/api/users/{_userId}");
+        var response = await _client.DeleteAsync($"/api/users/{_state.UserId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
     
-    [Fact]
+    [Fact, TestPriority(5)]
     public async Task Delete_NonExisting_ReturnsNotFound()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetAdminTokenAsync());
         
         // Act
         var response = await _client.DeleteAsync("/api/users/100000124");

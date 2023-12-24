@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
 using TaskManagementSystem.Api.Identity;
+using TaskManagementSystem.Api.IntegrationTests.Controllers.Fixtures;
 using TaskManagementSystem.BLL.Contracts;
 using TaskManagementSystem.BLL.Contracts.Responses;
 using TaskManagementSystem.DAL.Enums;
@@ -14,34 +15,31 @@ namespace TaskManagementSystem.Api.IntegrationTests.Controllers;
 public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixture<TaskControllerStateFixture>
 {
     private HttpClient _client;
-    private string _jwtToken;
-
+    
     private TaskControllerStateFixture _state;
     
     public TaskControllerTests(ApplicationFactory applicationFactory, TaskControllerStateFixture state)
     {
         _state = state;
         _client = applicationFactory.CreateClient();
-        
-        SetUp();
     }
-
-    private void SetUp()
+    
+    private async Task<string> GetTokenAsync()
     {
         var adminTokenRequest = new TokenRequest
         {
             Email = "admin@test.com",
             Password = "Adm1nPasswordd"
         };
-        var adminResponse = _client.PostAsJsonAsync("/api/auth/login", adminTokenRequest).GetAwaiter().GetResult();
-        _jwtToken = adminResponse.Content.ReadFromJsonAsync<TokenResponse>().GetAwaiter().GetResult()!.AccessToken;
+        var adminResponse = await _client.PostAsJsonAsync("/api/auth/login", adminTokenRequest);
+        return (await adminResponse.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
     }
     
     [Fact, TestPriority(1)]
     public async Task Create_NewTask_AddsAndReturnsTaskResponse()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
         var createTaskContract = new CreateTaskContract
         {
             Name = "New task",
@@ -86,7 +84,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     public async Task GetAll_TaskExists_ReturnsListOfTasks()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
 
         // Act
         var response = await _client.GetAsync("/api/users/1/tasks");
@@ -101,7 +99,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     public async Task GetById_TaskDoesNotExist_ReturnsNotFound()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
 
         // Act
         var response = await _client.GetAsync("/api/users/1/tasks/1341263871");
@@ -114,7 +112,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     public async Task GetById_ExistingTask_ReturnsTaskResponse()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
 
         // Act
         var response = await _client.GetAsync($"/api/users/1/tasks/{_state.TaskId}");
@@ -130,7 +128,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     public async Task Update_TaskDoesNotExist_ReturnsNotFound()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
         var updateTaskContract = new UpdateTaskContract()
         {
             Name = "NewName for task",
@@ -149,7 +147,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     public async Task Update_ExistingTask_UpdatesAndReturnsTaskResponse()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
         var updateTaskContract = new UpdateTaskContract()
         {
             Name = "NewName for task",
@@ -175,7 +173,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     public async Task Delete_TaskDoesNotExist_ReturnsNotFound()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
 
         // Act
         var response = await _client.DeleteAsync("/api/users/1/tasks/1341263871");
@@ -188,7 +186,7 @@ public class TaskControllerTests : IClassFixture<ApplicationFactory>, IClassFixt
     public async Task Delete_ExistingTask_DeletesAndReturnsOk()
     {
         // Arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
         
         // Act
         var response = await _client.DeleteAsync($"/api/users/1/tasks/{_state.TaskId}");
