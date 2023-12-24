@@ -49,7 +49,7 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, TaskR
 
         task.Name = request.Name;
         task.State = request.State;
-        task.DeadLine = request.DeadLine;
+        task.DeadLine = request.DeadLine?.ToUniversalTime();
 
         _unitOfWork.TaskRepository.Update(task);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

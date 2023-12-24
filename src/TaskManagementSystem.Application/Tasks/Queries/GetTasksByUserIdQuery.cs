@@ -1,12 +1,13 @@
-﻿using AutoMapper;
+﻿using Ardalis.Specification;
+using AutoMapper;
 using MediatR;
 using TaskManagementSystem.Application.Exceptions;
 using TaskManagementSystem.Application.Interfaces;
 using TaskManagementSystem.Application.Models;
-using TaskManagementSystem.Application.Specifications.Task;
 using TaskManagementSystem.Application.Tasks.Models;
 using TaskManagementSystem.Application.Utility;
 using TaskManagementSystem.Domain.Entities;
+using TaskManagementSystem.Domain.Specifications.Task;
 
 namespace TaskManagementSystem.Application.Tasks.Queries;
 
@@ -37,7 +38,7 @@ public class GetTasksByUserIdQueryHandler : IRequestHandler<GetTasksByUserIdQuer
             throw new ForbiddenException();
         }
 
-        var specs = new List<ISpecification<TaskEntity>>();
+        var specs = new List<Specification<TaskEntity>>();
 
         specs.Add(new TaskBelongsToUserSpecification(_currentUserService.UserId));
 
@@ -55,7 +56,10 @@ public class GetTasksByUserIdQueryHandler : IRequestHandler<GetTasksByUserIdQuer
 
         foreach (var spec in specs)
         {
-            predicate = predicate.And(spec.GetExpression());
+            foreach (var whereExpression in spec.WhereExpressions)
+            {
+                predicate = predicate.And(whereExpression.Filter);
+            }
         }
 
         var tasks = await _unitOfWork.TaskRepository.GetAsync(predicate, cancellationToken);
